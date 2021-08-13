@@ -196,4 +196,31 @@ public class Common {
         }
     }
 
+    // Удаление информации из таблицы
+    void deleteFromFavorites(String objectName) {
+        //System.out.println("2 " + type + "=" + objectName);
+        try {
+            Path input = Paths.get(Main.favoritePath);
+            Path temp = Files.createTempFile("temp", ".txt");
+            Stream<String> lines = Files.lines(input);
+            try (BufferedWriter writer = Files.newBufferedWriter(temp)) {
+                lines.filter(line -> {
+                            assert objectName != null;
+                            return !line.startsWith(objectName);
+                        })
+                        .forEach(line -> {
+                            try {
+                                writer.write(line);
+                                writer.newLine();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+            }
+            Files.move(temp, input, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

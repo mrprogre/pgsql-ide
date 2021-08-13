@@ -5,6 +5,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
     JTable table;
@@ -50,17 +51,28 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
         return text;
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) { // TODO сделать так, чтобы новое сообщение заменяло старое
         Common c = new Common();
+        String[] favTables = c.getFavoriteFromFile();
         int rowIdx = Gui.executeTable.getSelectedRow();
         String currentTable = Gui.executeTable.getValueAt(rowIdx, 1).toString();
+        //boolean hasInfo = false;
+
+        c.deleteFromFavorites(currentTable + ":info");
+
         String tabInfo = null;
         try {
             tabInfo = Gui.executeTable.getValueAt(rowIdx, 6).toString();
+            //hasInfo = Arrays.asList(favTables).contains(currentTable + ":info");
+            //System.out.println(currentTable + ":info");
+
         } catch (NullPointerException ignored) {
         }
+        //System.out.println("hasInfo " + hasInfo);
         assert tabInfo != null;
-        c.writeToConfig(currentTable + ":info", tabInfo);
+        //if (!hasInfo) {
+            c.writeToConfig(currentTable + ":info", tabInfo);
+        //}
         fireEditingStopped();
     }
 }
