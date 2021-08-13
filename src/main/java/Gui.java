@@ -526,7 +526,7 @@ public class Gui extends JFrame {
         });
 
         // Список таблиц пользователя
-        Object[] executeColumns = {"Num", "Name", "Fav", "Rows", " ", "Type", "Info", " "};
+        Object[] executeColumns = {"Num", "Name", "Fav", "Rows", "Σ", "Type", "Info", " "};
         executeModel = new DefaultTableModel(new Object[][]{
         }, executeColumns) {
             final boolean[] columnEditables = new boolean[]{false, false, true, false, true, false, true, true};
@@ -544,9 +544,8 @@ public class Gui extends JFrame {
         };
         executeTable = new JTable(executeModel);
         //executeTable.getColumnModel().getColumn(2).setCellEditor(new CheckBoxEditor(new JCheckBox()));
-        executeTable.getColumnModel().getColumn(4).setCellRenderer(new rowsCountBtn(executeTable, 4));
-        executeTable.getColumnModel().getColumn(7).setCellRenderer(new saveInfoBtn(executeTable, 7));
-        //executeTable.getColumn("Table").setCellRenderer(new MyTableCellRenderer());
+        executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 4));
+        executeTable.getColumn(" ").setCellRenderer(new saveInfoBtn(executeTable, 7));
         executeTable.setDefaultRenderer(Object.class, new TableInfoRenderer());
         executeTable.setAutoCreateRowSorter(true);
         executeColumnModel = executeTable.getColumnModel();
@@ -574,16 +573,16 @@ public class Gui extends JFrame {
         //
         DefaultTableCellRenderer Renderer = new DefaultTableCellRenderer();
         Renderer.setHorizontalAlignment(JLabel.CENTER);
-        //
-        executeTable.getColumnModel().getColumn(0).setCellRenderer(Renderer);
-        executeTable.getColumnModel().getColumn(3).setCellRenderer(Renderer);
-        executeTable.getColumnModel().getColumn(0).setMaxWidth(40);
-        executeTable.getColumnModel().getColumn(1).setPreferredWidth(300);
-        executeTable.getColumnModel().getColumn(2).setPreferredWidth(40);
-        executeTable.getColumnModel().getColumn(3).setPreferredWidth(120);
-        executeTable.getColumnModel().getColumn(4).setMaxWidth(30);
-        executeTable.getColumnModel().getColumn(6).setPreferredWidth(120);
-        executeTable.getColumnModel().getColumn(7).setMaxWidth(30);
+        // "Num", "Name", "Fav", "Rows", " ", "Type", "Info", " "
+        executeTable.getColumn("Num").setCellRenderer(Renderer);
+        executeTable.getColumn("Num").setMaxWidth(40);
+        executeTable.getColumn("Name").setPreferredWidth(300);
+        executeTable.getColumn("Fav").setPreferredWidth(40);
+        executeTable.getColumn("Rows").setPreferredWidth(120);
+        executeTable.getColumn("Rows").setCellRenderer(Renderer);
+        executeTable.getColumn("Σ").setMaxWidth(30);
+        executeTable.getColumn("Info").setPreferredWidth(120);
+        executeTable.getColumn(" ").setMaxWidth(30);
         executeTable.setRowHeight(22);
         executeTable.setFont(new Font("SansSerif", Font.PLAIN, 13));
         executeTable.setSelectionBackground(new Color(0, 0, 0, 42));
