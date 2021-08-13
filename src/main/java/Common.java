@@ -137,9 +137,9 @@ public class Common {
     }
 
     // Запись избранных таблиц
-    void writeToConfig(String text) {
+    void writeToConfig(String type, String text) {
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(Main.favoritePath, true), StandardCharsets.UTF_8)) {
-            writer.write(text+"\n");
+            writer.write(type + "=" + text+"\n");
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -157,16 +157,20 @@ public class Common {
             int i = 0;
 
             while ((line = reader.readLine()) != null && i < linesAmount) {
-                lines[i++] = line;
+                if (line.startsWith("favorite_table=")) {
+                    lines[i++] = line.replaceAll("favorite_table=", "");
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //System.out.println("167 " + Arrays.toString(lines));
         return lines;
     }
 
     // Удаление таблицы из списка избранных таблиц
-    void deleteFromFavorites(String objectName) {
+    void deleteFromFavorites(String type, String objectName) {
+        //System.out.println("2 " + type + "=" + objectName);
         try {
             Path input = Paths.get(Main.favoritePath);
             Path temp = Files.createTempFile("temp", ".txt");
@@ -174,7 +178,7 @@ public class Common {
             try (BufferedWriter writer = Files.newBufferedWriter(temp)) {
                 lines.filter(line -> {
                             assert objectName != null;
-                            return !line.startsWith(objectName);
+                            return !line.startsWith(type + "=" + objectName);
                         })
                         .forEach(line -> {
                             try {
