@@ -51,28 +51,20 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
         return text;
     }
 
-    public void actionPerformed(ActionEvent e) { // TODO сделать так, чтобы новое сообщение заменяло старое
+    public void actionPerformed(ActionEvent e) {
         Common c = new Common();
-        String[] favTables = c.getFavoriteFromFile();
         int rowIdx = Gui.executeTable.getSelectedRow();
         String currentTable = Gui.executeTable.getValueAt(rowIdx, 1).toString();
-        //boolean hasInfo = false;
-
         c.deleteFromFavorites(currentTable + ":info");
-
-        String tabInfo = null;
+        String tabInfo;
         try {
             tabInfo = Gui.executeTable.getValueAt(rowIdx, 6).toString();
-            //hasInfo = Arrays.asList(favTables).contains(currentTable + ":info");
-            //System.out.println(currentTable + ":info");
-
+            assert tabInfo != null;
+            if (tabInfo.length() > 0) {
+                c.writeToConfig(currentTable + ":info", tabInfo);
+            }
         } catch (NullPointerException ignored) {
         }
-        //System.out.println("hasInfo " + hasInfo);
-        assert tabInfo != null;
-        //if (!hasInfo) {
-            c.writeToConfig(currentTable + ":info", tabInfo);
-        //}
         fireEditingStopped();
     }
 }
