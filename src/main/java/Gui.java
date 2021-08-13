@@ -286,7 +286,7 @@ public class Gui extends JFrame {
                     List<SelectItem> allColumnsFromQuery = common.getColumns(textArea.getText()); //TODO ограничить селект кол-вом столбцов, узнать их типы
                     pg.getUserColumns(tableName);
 
-                    Object [] selectTableColumns = pg.userColumns.toArray();
+                    Object[] selectTableColumns = pg.userColumns.toArray();
                     selectModel = new DefaultTableModel(new Object[][]{
                     }, selectTableColumns) {
                         // Сортировка в любой таблице по любому типу столбца
@@ -526,16 +526,16 @@ public class Gui extends JFrame {
         });
 
         // Список таблиц пользователя
-        Object[] executeColumns = {"Num", "Name", "Fav", "Rows", " ", "Type", "Info"};
+        Object[] executeColumns = {"Num", "Name", "Fav", "Rows", " ", "Type", "Info", " "};
         executeModel = new DefaultTableModel(new Object[][]{
         }, executeColumns) {
-            final boolean[] columnEditables = new boolean[]{false, false, true, false, true, false, true};
+            final boolean[] columnEditables = new boolean[]{false, false, true, false, true, false, true, true};
 
             public boolean isCellEditable(int row, int column) {
                 return this.columnEditables[column];
             }
 
-            final Class[] types = {Integer.class, String.class, Boolean.class, String.class, Button.class, String.class, String.class};
+            final Class[] types = {Integer.class, String.class, Boolean.class, String.class, Button.class, String.class, String.class, Button.class};
 
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -544,7 +544,8 @@ public class Gui extends JFrame {
         };
         executeTable = new JTable(executeModel);
         //executeTable.getColumnModel().getColumn(2).setCellEditor(new CheckBoxEditor(new JCheckBox()));
-        executeTable.getColumn(" ").setCellRenderer(new ButtonColumn(executeTable, 4));
+        executeTable.getColumnModel().getColumn(4).setCellRenderer(new rowsCountBtn(executeTable, 4));
+        executeTable.getColumnModel().getColumn(7).setCellRenderer(new saveInfoBtn(executeTable, 7));
         //executeTable.getColumn("Table").setCellRenderer(new MyTableCellRenderer());
         executeTable.setDefaultRenderer(Object.class, new TableInfoRenderer());
         executeTable.setAutoCreateRowSorter(true);
@@ -582,6 +583,7 @@ public class Gui extends JFrame {
         executeTable.getColumnModel().getColumn(3).setPreferredWidth(120);
         executeTable.getColumnModel().getColumn(4).setMaxWidth(30);
         executeTable.getColumnModel().getColumn(6).setPreferredWidth(120);
+        executeTable.getColumnModel().getColumn(7).setMaxWidth(30);
         executeTable.setRowHeight(22);
         executeTable.setFont(new Font("SansSerif", Font.PLAIN, 13));
         executeTable.setSelectionBackground(new Color(0, 0, 0, 42));
@@ -591,16 +593,18 @@ public class Gui extends JFrame {
         // Клики в левой таблице
         executeTable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                String[] favTables = common.getFavoriteFromFile();
                 int columnIdx = executeColumnModel.getColumnIndexAtX(e.getX());
-                int rowIdx = executeTable.getSelectedRow();
-                if (executeModel.getRowCount() > 0) {
-                    String favTable = executeTable.getValueAt(rowIdx, 1).toString();
-                    boolean inFavorites = Arrays.asList(favTables).contains(favTable);
-                    if (e.getClickCount() == 1 && columnIdx == 2 && !inFavorites) {
-                        common.writeToConfig("favorite_table", favTable);
-                    } else if (e.getClickCount() == 1 && columnIdx == 2 && inFavorites) {
-                        common.deleteFromFavorites("favorite_table", favTable);
+                if (columnIdx == 2) {
+                    String[] favTables = common.getFavoriteFromFile();
+                    int rowIdx = executeTable.getSelectedRow();
+                    if (executeModel.getRowCount() > 0) {
+                        String favTable = executeTable.getValueAt(rowIdx, 1).toString();
+                        boolean inFavorites = Arrays.asList(favTables).contains(favTable);
+                        if (e.getClickCount() == 1 && !inFavorites) {
+                            common.writeToConfig("favorite_table", favTable);
+                        } else if (e.getClickCount() == 1 && inFavorites) {
+                            common.deleteFromFavorites("favorite_table", favTable);
+                        }
                     }
                 }
 
@@ -636,7 +640,7 @@ public class Gui extends JFrame {
                             }
                         }
 
-                        Object [] selectTableColumns = pg.userColumns.toArray();
+                        Object[] selectTableColumns = pg.userColumns.toArray();
                         selectModel = new DefaultTableModel(new Object[][]{
                         }, selectTableColumns) {
                             // Сортировка в любой таблице по любому типу столбца
@@ -998,7 +1002,7 @@ public class Gui extends JFrame {
 
             JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
 
-            if (column == 1||column == 6) c.setHorizontalAlignment(LEFT);
+            if (column == 1 || column == 6) c.setHorizontalAlignment(LEFT);
             else c.setHorizontalAlignment(CENTER);
 
             if (row % 2 == 0) {

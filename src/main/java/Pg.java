@@ -88,7 +88,16 @@ public class Pg {
                 // проверка на наличие таблицы в избранном
                 boolean inFavorite = Arrays.asList(favTables).contains(table);
 
-                Object[] row = new Object[]{count, table, inFavorite, "","", type.replace("BASE ", "").toLowerCase(Locale.ROOT)};
+                // заполнение графы Info
+                String info = null;
+                for (String f : favTables) {
+                    if (f.startsWith(table + ":info=")) {
+                        info = f.substring(table.length() + 6);
+                        break;
+                    }
+                }
+
+                Object[] row = new Object[]{count, table, inFavorite, "","", type.replace("BASE ", "").toLowerCase(Locale.ROOT), info};
                 Gui.executeModel.addRow(row);
             }
             rs.close();

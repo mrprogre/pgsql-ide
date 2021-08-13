@@ -6,14 +6,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class ButtonColumn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
+class rowsCountBtn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
     int rowCountInTable;
     JTable table;
     JButton renderButton;
     JButton editButton;
     String text;
 
-    public ButtonColumn(JTable table, int column) {
+    public rowsCountBtn(JTable table, int column) {
         super();
         this.table = table;
         renderButton = new JButton();

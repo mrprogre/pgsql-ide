@@ -139,7 +139,7 @@ public class Common {
     // Запись избранных таблиц
     void writeToConfig(String type, String text) {
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(Main.favoritePath, true), StandardCharsets.UTF_8)) {
-            writer.write(type + "=" + text+"\n");
+            writer.write(type + "=" + text + "\n");
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -157,14 +157,15 @@ public class Common {
             int i = 0;
 
             while ((line = reader.readLine()) != null && i < linesAmount) {
-                if (line.startsWith("favorite_table=")) {
-                    lines[i++] = line.replaceAll("favorite_table=", "");
-                }
+//                if (line.startsWith("favorite_table=")) {
+//                    lines[i++] = line.replaceAll("favorite_table=", "");
+//                }
+                lines[i++] = line.replaceAll("favorite_table=", "");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //System.out.println("167 " + Arrays.toString(lines));
+        System.out.println("167 " + Arrays.toString(lines));
         return lines;
     }
 
