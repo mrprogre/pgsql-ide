@@ -35,7 +35,7 @@ public class Main {
             gui.addMouseMotionListener(frameDragListener);
         };
         SwingUtilities.invokeLater(runnable);
-        //gui.connectionBtn.doClick();
+        gui.connectionBtn.doClick();
     }
 }
 

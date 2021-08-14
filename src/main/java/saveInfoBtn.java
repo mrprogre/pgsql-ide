@@ -28,12 +28,12 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         ImageIcon sumIcon1 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/save.png")));
-        ImageIcon sumIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/sum2.png")));
+        ImageIcon leftIcon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/left.png")));
         if (hasFocus) {
             renderButton.setForeground(table.getForeground());
             renderButton.setBackground(UIManager.getColor("Button.background"));
         } else if (isSelected) {
-            renderButton.setIcon(sumIcon2);
+            renderButton.setIcon(leftIcon);
         } else {
             renderButton.setIcon(sumIcon1);
         }

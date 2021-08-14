@@ -543,7 +543,6 @@ public class Gui extends JFrame {
             }
         };
         executeTable = new JTable(executeModel);
-        //executeTable.getColumnModel().getColumn(2).setCellEditor(new CheckBoxEditor(new JCheckBox()));
         executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 3));
         executeTable.getColumn(" ").setCellRenderer(new saveInfoBtn(executeTable, 7));
         executeTable.setDefaultRenderer(Object.class, new TableInfoRenderer());
