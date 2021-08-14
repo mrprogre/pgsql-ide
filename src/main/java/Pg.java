@@ -97,7 +97,7 @@ public class Pg {
                     }
                 }
 
-                Object[] row = new Object[]{count, table, inFavorite, "","", type.replace("BASE ", "").toLowerCase(Locale.ROOT), info};
+                Object[] row = new Object[]{count, inFavorite, table, "","", type.replace("BASE ", "").toLowerCase(Locale.ROOT), info};
                 Gui.executeModel.addRow(row);
             }
             rs.close();

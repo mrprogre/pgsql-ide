@@ -62,7 +62,7 @@ class rowsCountBtn extends AbstractCellEditor implements TableCellRenderer, Tabl
     public void actionPerformed(ActionEvent e) {
         Pg pg = new Pg();
         int row = Gui.executeTable.getSelectedRow();
-        String table = (String) Gui.executeTable.getValueAt(row, 1);
+        String table = (String) Gui.executeTable.getValueAt(row, 2);
         rowCountInTable = pg.rowsInTable(table);
         String s = String.format("%,d", rowCountInTable);
         Gui.executeTable.setValueAt(s, row, 4);

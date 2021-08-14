@@ -526,16 +526,16 @@ public class Gui extends JFrame {
         });
 
         // Список таблиц пользователя
-        Object[] executeColumns = {"Num", "Name", "Fav", "Σ", "Rows", "Type", "Info", " "};
+        Object[] executeColumns = {"Num", "Fav", "Name", "Σ", "Rows", "Type", "Info", " "};
         executeModel = new DefaultTableModel(new Object[][]{
         }, executeColumns) {
-            final boolean[] columnEditables = new boolean[]{false, false, true, true, false, false, true, true};
+            final boolean[] columnEditables = new boolean[]{false, true, false, true, false, false, true, true};
 
             public boolean isCellEditable(int row, int column) {
                 return this.columnEditables[column];
             }
 
-            final Class[] types = {Integer.class, String.class, Boolean.class, Button.class, String.class, String.class, String.class, Button.class};
+            final Class[] types = {Integer.class, Boolean.class, String.class, Button.class, String.class, String.class, String.class, Button.class};
 
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -591,11 +591,11 @@ public class Gui extends JFrame {
         executeTable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 int columnIdx = executeColumnModel.getColumnIndexAtX(e.getX());
-                if (columnIdx == 2) {
+                if (columnIdx == 1) {
                     String[] favTables = common.getFavoriteFromFile();
                     int rowIdx = executeTable.getSelectedRow();
                     if (executeModel.getRowCount() > 0) {
-                        String favTable = executeTable.getValueAt(rowIdx, 1).toString();
+                        String favTable = executeTable.getValueAt(rowIdx, 2).toString();
                         boolean inFavorites = Arrays.asList(favTables).contains(favTable);
                         if (e.getClickCount() == 1 && !inFavorites) {
                             common.writeToConfig("favorite_table", favTable);
@@ -608,7 +608,7 @@ public class Gui extends JFrame {
                 if (e.getClickCount() == 2) {
                     if (executeModel.getRowCount() > 0) {
                         int row = executeTable.getSelectedRow();
-                        String tableName = executeTable.getValueAt(row, 1).toString();
+                        String tableName = executeTable.getValueAt(row, 2).toString();
                         pg.getUserColumns(tableName);
                         String objectType = executeTable.getValueAt(row, 5).toString();
                         // Получаем название таблицы на которой построен matview
@@ -838,15 +838,6 @@ public class Gui extends JFrame {
             clipboard.setContents(stringSelection, null);
         });
         executeHeadersMenu.add(itemClose);
-        // 4 Select data in column
-//        JMenuItem selectAllItems = new JMenuItem("Select all");
-//        selectAllItems.setBackground(new Color(241, 253, 239));
-//        selectAllItems.addActionListener(e -> {
-//            int columnIndex = executeColumnModel.getColumnIndexAtX(headerX);
-//            executeTable.setRowSelectionInterval(0, executeModel.getRowCount() - 1);
-//            executeTable.setColumnSelectionInterval(columnIndex, columnIndex);
-//        });
-//        executeHeadersMenu.add(selectAllItems);
 
         // Лимит строк в селекте из файла config.txt
         JLabel configParamsLabel = new JLabel("user " + pg.user.toUpperCase()
@@ -1010,7 +1001,7 @@ public class Gui extends JFrame {
 
             JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
 
-            if (column == 1 || column == 6) c.setHorizontalAlignment(LEFT);
+            if (column == 2 || column == 6) c.setHorizontalAlignment(LEFT);
             else c.setHorizontalAlignment(CENTER);
 
             if (row % 2 == 0 && column != 6) {
