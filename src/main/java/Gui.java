@@ -573,7 +573,6 @@ public class Gui extends JFrame {
         //
         DefaultTableCellRenderer Renderer = new DefaultTableCellRenderer();
         Renderer.setHorizontalAlignment(JLabel.CENTER);
-        // "Num", "Name", "Fav", "Rows", " ", "Type", "Info", " "
         executeTable.getColumn("Num").setCellRenderer(Renderer);
         executeTable.getColumn("Num").setMaxWidth(40);
         executeTable.getColumn("Name").setPreferredWidth(300);
