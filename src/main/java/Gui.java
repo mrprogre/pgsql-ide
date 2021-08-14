@@ -1,3 +1,4 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.sf.jsqlparser.statement.select.SelectItem;
 
 import javax.imageio.ImageIO;
@@ -298,6 +299,9 @@ public class Gui extends JFrame {
                         }
                     };
                     selectTable = new JTable(selectModel);
+                    selectTable.setDefaultRenderer(Object.class, new SelectTableInfoRenderer());
+                    selectTable.setDefaultRenderer(Date.class, new SelectTableInfoRenderer());
+                    selectTable.setDefaultRenderer(Number.class, new SelectTableInfoRenderer());
                     selectColumnModel = selectTable.getColumnModel();
                     selectTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     selectTable.setAutoCreateRowSorter(true);
@@ -338,6 +342,15 @@ public class Gui extends JFrame {
                     //
                     if (selectModel.getColumnCount() > 0) selectModel.setRowCount(0);
                     pg.selectFromTable(tableName, "table");
+
+                    selectTable.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            if (SwingUtilities.isRightMouseButton(e)) {
+                                selectTable.setColumnSelectionInterval(0, selectTable.getColumnCount() - 1);
+                            }
+                        }
+                    });
 
                     // popup menu
                     JPopupMenu selectHeadersMenu = new JPopupMenu();
@@ -661,9 +674,12 @@ public class Gui extends JFrame {
                                 new Dimension(rightPanelTop.getHeight(), 26)
                         );
                         //Cell alignment
-                        DefaultTableCellRenderer executeRenderer = new DefaultTableCellRenderer();
-                        executeRenderer.setHorizontalAlignment(JLabel.CENTER);
+                        //DefaultTableCellRenderer executeRenderer = new DefaultTableCellRenderer();
+                        //executeRenderer.setHorizontalAlignment(JLabel.CENTER);
                         selectTable.setRowHeight(20);
+                        selectTable.setDefaultRenderer(Object.class, new SelectTableInfoRenderer());
+                        selectTable.setDefaultRenderer(Date.class, new SelectTableInfoRenderer());
+                        selectTable.setDefaultRenderer(Number.class, new SelectTableInfoRenderer());
                         selectTable.setColumnSelectionAllowed(true);
                         selectTable.setCellSelectionEnabled(true);
                         selectTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -689,6 +705,15 @@ public class Gui extends JFrame {
                         //
                         if (selectModel.getColumnCount() > 0) selectModel.setRowCount(0);
                         pg.selectFromTable(tableName, objectType);
+
+                        selectTable.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                if (SwingUtilities.isRightMouseButton(e)) {
+                                    selectTable.setColumnSelectionInterval(0, selectTable.getColumnCount() - 1);
+                                }
+                            }
+                        });
 
                         // popup menu
                         JPopupMenu selectHeadersMenu = new JPopupMenu();
@@ -960,8 +985,8 @@ public class Gui extends JFrame {
                 setForeground(new Color(2, 89, 22));
                 setHorizontalAlignment(CENTER);
             } else if (column == 6) {
-                    setForeground(new Color(84, 84, 84));
-                    setHorizontalAlignment(CENTER);
+                setForeground(new Color(84, 84, 84));
+                setHorizontalAlignment(CENTER);
             } else {
                 setForeground(new Color(0, 0, 0));
                 setHorizontalAlignment(CENTER);
@@ -1008,6 +1033,29 @@ public class Gui extends JFrame {
                 c.setBackground(new Color(232, 246, 255));
             } else if (row % 2 == 1 && column != 6) {
                 c.setBackground(new Color(255, 252, 232));
+            } else {
+                c.setBackground(new Color(255, 255, 255));
+            }
+
+            if (isSelected) {
+                setBackground(new Color(175, 175, 175));
+            }
+            return c;
+        }
+    }
+
+    // Столбец с названием таблиц
+    static class SelectTableInfoRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+
+            JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
+
+            c.setHorizontalAlignment(CENTER);
+
+            if (row % 2 == 0) {
+                c.setBackground(new Color(232, 246, 255));
             } else {
                 c.setBackground(new Color(255, 255, 255));
             }

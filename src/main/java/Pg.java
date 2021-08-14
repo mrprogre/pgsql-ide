@@ -213,7 +213,6 @@ public class Pg {
             } else {
                 columnCount = cols.size();
             }
-            System.out.println("cols = " + cols);
 
             while (rs.next()) {
                 Object[] row = new Object[columnCount];
