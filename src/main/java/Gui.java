@@ -783,14 +783,14 @@ public class Gui extends JFrame {
                         selectHeadersMenu.add(itemCopydataAsExptression);
 
                         // 6 Select data in column
-                        JMenuItem selectAllItems = new JMenuItem("Select all");
-                        selectAllItems.setBackground(new Color(250, 253, 239));
-                        selectAllItems.addActionListener(e6 -> {
-                            int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
-                            selectTable.setRowSelectionInterval(0, selectModel.getRowCount() - 1);
-                            selectTable.setColumnSelectionInterval(columnIndex, columnIndex);
-                        });
-                        selectHeadersMenu.add(selectAllItems);
+//                        JMenuItem selectAllItems = new JMenuItem("Select all");
+//                        selectAllItems.setBackground(new Color(250, 253, 239));
+//                        selectAllItems.addActionListener(e6 -> {
+//                            int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
+//                            selectTable.setRowSelectionInterval(0, selectModel.getRowCount() - 1);
+//                            selectTable.setColumnSelectionInterval(columnIndex, columnIndex);
+//                        });
+//                        selectHeadersMenu.add(selectAllItems);
                     }
                 }
             }
@@ -852,14 +852,14 @@ public class Gui extends JFrame {
         });
         executeHeadersMenu.add(itemClose);
         // 4 Select data in column
-        JMenuItem selectAllItems = new JMenuItem("Select all");
-        selectAllItems.setBackground(new Color(241, 253, 239));
-        selectAllItems.addActionListener(e -> {
-            int columnIndex = executeColumnModel.getColumnIndexAtX(headerX);
-            executeTable.setRowSelectionInterval(0, executeModel.getRowCount() - 1);
-            executeTable.setColumnSelectionInterval(columnIndex, columnIndex);
-        });
-        executeHeadersMenu.add(selectAllItems);
+//        JMenuItem selectAllItems = new JMenuItem("Select all");
+//        selectAllItems.setBackground(new Color(241, 253, 239));
+//        selectAllItems.addActionListener(e -> {
+//            int columnIndex = executeColumnModel.getColumnIndexAtX(headerX);
+//            executeTable.setRowSelectionInterval(0, executeModel.getRowCount() - 1);
+//            executeTable.setColumnSelectionInterval(columnIndex, columnIndex);
+//        });
+//        executeHeadersMenu.add(selectAllItems);
 
         // Лимит строк в селекте из файла config.txt
         JLabel configParamsLabel = new JLabel("user " + pg.user.toUpperCase()
