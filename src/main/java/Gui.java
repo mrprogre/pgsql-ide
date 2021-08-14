@@ -292,16 +292,21 @@ public class Gui extends JFrame {
                     }, selectTableColumns) {
                         // Сортировка в любой таблице по любому типу столбца
                         final Class[] types = common.typeClass(pg.types);
-
                         @Override
                         public Class getColumnClass(int columnIndex) {
                             return this.types[columnIndex];
+                        }
+                        final boolean[] columnEditables = new boolean[pg.types.size()];
+                        @Override
+                        public boolean isCellEditable(int row, int column) {
+                            return this.columnEditables[column];
                         }
                     };
                     selectTable = new JTable(selectModel);
                     selectTable.setDefaultRenderer(Object.class, new SelectTableInfoRenderer());
                     selectTable.setDefaultRenderer(Date.class, new SelectTableInfoRenderer());
                     selectTable.setDefaultRenderer(Number.class, new SelectTableInfoRenderer());
+                    selectTable.setDefaultRenderer(Boolean.class, new SelectTableInfoRenderer());
                     selectColumnModel = selectTable.getColumnModel();
                     selectTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     selectTable.setAutoCreateRowSorter(true);
@@ -655,10 +660,14 @@ public class Gui extends JFrame {
                         }, selectTableColumns) {
                             // Сортировка в любой таблице по любому типу столбца
                             final Class[] types = common.typeClass(pg.types);
-
                             @Override
                             public Class getColumnClass(int columnIndex) {
                                 return this.types[columnIndex];
+                            }
+                            final boolean[] columnEditables = new boolean[pg.types.size()];
+                            @Override
+                            public boolean isCellEditable(int row, int column) {
+                                return this.columnEditables[column];
                             }
                         };
                         selectTable = new JTable(selectModel);
@@ -680,6 +689,7 @@ public class Gui extends JFrame {
                         selectTable.setDefaultRenderer(Object.class, new SelectTableInfoRenderer());
                         selectTable.setDefaultRenderer(Date.class, new SelectTableInfoRenderer());
                         selectTable.setDefaultRenderer(Number.class, new SelectTableInfoRenderer());
+                        selectTable.setDefaultRenderer(Boolean.class, new SelectTableInfoRenderer());
                         selectTable.setColumnSelectionAllowed(true);
                         selectTable.setCellSelectionEnabled(true);
                         selectTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
