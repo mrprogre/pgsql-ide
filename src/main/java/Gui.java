@@ -526,16 +526,16 @@ public class Gui extends JFrame {
         });
 
         // Список таблиц пользователя
-        Object[] executeColumns = {"Num", "Name", "Fav", "Rows", "Σ", "Type", "Info", " "};
+        Object[] executeColumns = {"Num", "Name", "Fav", "Σ", "Rows", "Type", "Info", " "};
         executeModel = new DefaultTableModel(new Object[][]{
         }, executeColumns) {
-            final boolean[] columnEditables = new boolean[]{false, false, true, false, true, false, true, true};
+            final boolean[] columnEditables = new boolean[]{false, false, true, true, false, false, true, true};
 
             public boolean isCellEditable(int row, int column) {
                 return this.columnEditables[column];
             }
 
-            final Class[] types = {Integer.class, String.class, Boolean.class, String.class, Button.class, String.class, String.class, Button.class};
+            final Class[] types = {Integer.class, String.class, Boolean.class, Button.class, String.class, String.class, String.class, Button.class};
 
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -544,7 +544,7 @@ public class Gui extends JFrame {
         };
         executeTable = new JTable(executeModel);
         //executeTable.getColumnModel().getColumn(2).setCellEditor(new CheckBoxEditor(new JCheckBox()));
-        executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 4));
+        executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 3));
         executeTable.getColumn(" ").setCellRenderer(new saveInfoBtn(executeTable, 7));
         executeTable.setDefaultRenderer(Object.class, new TableInfoRenderer());
         executeTable.setAutoCreateRowSorter(true);
@@ -780,16 +780,6 @@ public class Gui extends JFrame {
                             clipboard.setContents(stringSelection, null);
                         });
                         selectHeadersMenu.add(itemCopydataAsExptression);
-
-                        // 6 Select data in column
-//                        JMenuItem selectAllItems = new JMenuItem("Select all");
-//                        selectAllItems.setBackground(new Color(250, 253, 239));
-//                        selectAllItems.addActionListener(e6 -> {
-//                            int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
-//                            selectTable.setRowSelectionInterval(0, selectModel.getRowCount() - 1);
-//                            selectTable.setColumnSelectionInterval(columnIndex, columnIndex);
-//                        });
-//                        selectHeadersMenu.add(selectAllItems);
                     }
                 }
             }
@@ -951,7 +941,7 @@ public class Gui extends JFrame {
             }
         });
 
-        common.getFavoriteFromFile();
+        //common.getFavoriteFromFile();
         this.setVisible(true);
     }
 
