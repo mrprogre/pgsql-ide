@@ -966,9 +966,12 @@ public class Gui extends JFrame {
             } else if (column == 2) {
                 setForeground(new Color(161, 0, 0));
                 setHorizontalAlignment(CENTER);
-            } else if (column == 3) {
+            } else if (column == 4) {
                 setForeground(new Color(2, 89, 22));
                 setHorizontalAlignment(CENTER);
+            } else if (column == 6) {
+                    setForeground(new Color(84, 84, 84));
+                    setHorizontalAlignment(CENTER);
             } else {
                 setForeground(new Color(0, 0, 0));
                 setHorizontalAlignment(CENTER);
@@ -1011,10 +1014,12 @@ public class Gui extends JFrame {
             if (column == 1 || column == 6) c.setHorizontalAlignment(LEFT);
             else c.setHorizontalAlignment(CENTER);
 
-            if (row % 2 == 0) {
+            if (row % 2 == 0 && column != 6) {
                 c.setBackground(new Color(232, 246, 255));
-            } else {
+            } else if (row % 2 == 1 && column != 6) {
                 c.setBackground(new Color(255, 252, 232));
+            } else {
+                c.setBackground(new Color(255, 255, 255));
             }
 
             if (isSelected) {
