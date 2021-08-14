@@ -5,7 +5,6 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
     JTable table;
