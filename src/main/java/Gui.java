@@ -778,7 +778,6 @@ public class Gui extends JFrame {
                             StringSelection stringSelection = new StringSelection(rows.substring(0, rows.length() - 2) + ");");
                             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                             clipboard.setContents(stringSelection, null);
-
                         });
                         selectHeadersMenu.add(itemCopydataAsExptression);
 
