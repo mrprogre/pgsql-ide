@@ -744,7 +744,7 @@ public class Gui extends JFrame {
         executeHeadersMenu.add(itemClose);
 
         // Текстовая область
-        textArea = new JTextArea("select * from flight limit 100");
+        textArea = new JTextArea("select ori_airport, id, status from flight limit 100");
         textArea.setEnabled(false);
         textArea.setFont(new Font("Tahoma", Font.BOLD, 13));
         textArea.setLineWrap(true);
@@ -756,8 +756,21 @@ public class Gui extends JFrame {
                     // Определяем название таблицы
                     List<String> allTablesFromQuery = common.getTableName(textArea.getText());
                     String tableName = allTablesFromQuery.get(0);
-                    List<SelectItem> allColumnsFromQuery = common.getColumns(textArea.getText()); //TODO ограничить селект кол-вом столбцов, узнать их типы
-                    pg.getUserColumns(tableName);
+                    List<SelectItem> allColumnsFromQuery = common.getColumns(textArea.getText()); //TODO если писать столбцы вразнобой, то результат неправильный из-за типов
+                    System.out.println(allColumnsFromQuery);
+
+                    StringBuilder columnsForQuery = new StringBuilder();
+                    for (SelectItem selectItem : allColumnsFromQuery) {
+                        columnsForQuery
+                                .append("'")
+                                .append(selectItem)
+                                .append("', ");
+                    }
+                    columnsForQuery = new StringBuilder(columnsForQuery.substring(0, columnsForQuery.length() - 2));
+                    System.out.println(columnsForQuery);
+
+
+                    pg.getUserColumns(tableName, columnsForQuery.toString());
 
                     Object[] selectTableColumns = pg.userColumns.toArray();
                     selectModel = new DefaultTableModel(new Object[][]{
@@ -821,7 +834,7 @@ public class Gui extends JFrame {
                     rightPanelTop.setViewportView(selectTable);
                     //
                     if (selectModel.getColumnCount() > 0) selectModel.setRowCount(0);
-                    pg.selectFromTable(tableName, "table");
+                    //pg.selectFromTable(tableName, "table"); // надо ли? убрал
 
                     selectTable.addMouseListener(new MouseAdapter() {
                         @Override

@@ -130,13 +130,45 @@ public class Pg {
         }
     }
 
+    // Список всех столбцов текущего пользователя
+    void getUserColumns(String tableName, String columns) {
+        if (userColumns.size() > 0) userColumns.clear(); //?
+        if (types.size() > 0) types.clear(); //?
+        try {
+            String sql;
+            if (columns.contains("*")) {
+                sql = "select column_name, data_type, udt_name from information_schema.columns \n" +
+                        "where table_name= '" + tableName + "' \n" +
+                        "order by ordinal_position";
+            } else {
+                sql = "select column_name, data_type, udt_name from information_schema.columns \n" +
+                        "where table_name= '" + tableName + "' \n" +
+                        "and column_name in(" + columns + ") \n" +
+                        "order by ordinal_position";
+            }
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String column = rs.getString("column_name");
+                userColumns.add(column);
+                String udt_name = rs.getString("udt_name");
+                types.add(udt_name);
+            }
+            rs.close();
+            st.close();
+        } catch (SQLException sql) {
+            sql.printStackTrace();
+        }
+    }
+
+
     // Данные из выбранной таблицы
     void selectFromTable(String table, String object) {
         String sqlQuery = null;
         try {
             if (object.equals("matview")) {
                 sqlQuery = Gui.definitionFromMatview + " LIMIT " + rowsLimitFromConfig;
-            } else if (object.equals("table")|| object.equals("view")) {
+            } else if (object.equals("table") || object.equals("view")) {
                 sqlQuery = "SELECT * FROM " + table + " LIMIT " + rowsLimitFromConfig;
             }
             PreparedStatement st = connection.prepareStatement(sqlQuery);
@@ -201,13 +233,13 @@ public class Pg {
     }
 
     // Выполнение любого запроса
-    void select(String sql){
+    void select(String sql) {
         try {
             if (Gui.selectModel.getRowCount() > 0) Gui.selectModel.setRowCount(0);
-            PreparedStatement st = connection.prepareStatement(sql.replaceAll("\n",""));
+            PreparedStatement st = connection.prepareStatement(sql.replaceAll("\n", ""));
             ResultSet rs = st.executeQuery();
             int columnCount;
-            List <SelectItem> cols = common.getColumns(sql);
+            List<SelectItem> cols = common.getColumns(sql);
             if (cols.get(0).toString().equals("*")) {
                 columnCount = rs.getMetaData().getColumnCount();
             } else {
