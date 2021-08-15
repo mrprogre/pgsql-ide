@@ -27,7 +27,7 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
     }
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        ImageIcon sumIcon1 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/save.png")));
+        ImageIcon sumIcon1 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/save1.png")));
         ImageIcon leftIcon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/left.png")));
         if (hasFocus) {
             renderButton.setForeground(table.getForeground());
@@ -35,6 +35,7 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
         } else if (isSelected) {
             renderButton.setIcon(leftIcon);
         } else {
+            renderButton.setToolTipText("save comment");
             renderButton.setIcon(sumIcon1);
         }
         return renderButton;
@@ -53,7 +54,7 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
     public void actionPerformed(ActionEvent e) {
         Common c = new Common();
         int rowIdx = Gui.executeTable.getSelectedRow();
-        String currentTable = Gui.executeTable.getValueAt(rowIdx, 2).toString();
+        String currentTable = Gui.executeTable.getValueAt(rowIdx, 3).toString();
         c.deleteFromFavorites(currentTable + ":info");
         String tabInfo;
         try {

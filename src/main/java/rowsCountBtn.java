@@ -31,19 +31,13 @@ class rowsCountBtn extends AbstractCellEditor implements TableCellRenderer, Tabl
         ImageIcon sumIcon1 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/sum1.png")));
         ImageIcon sumIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/sum2.png")));
         if (hasFocus) {
-            //renderButton.setText(String.valueOf(rowCountInTable));
             renderButton.setForeground(table.getForeground());
             renderButton.setBackground(UIManager.getColor("Button.background"));
         } else if (isSelected) {
-            //renderButton.setText(String.valueOf(rowCountInTable));
-            //renderButton.setForeground(table.getSelectionForeground());
-            //renderButton.setBackground(table.getSelectionBackground());
             renderButton.setIcon(sumIcon2);
         } else {
-            //renderButton.setText("rows");
-            //renderButton.setForeground(table.getForeground());
-            //renderButton.setBackground(UIManager.getColor("Button.background"));
             renderButton.setIcon(sumIcon1);
+            renderButton.setToolTipText("count(*)");
         }
         //renderButton.setText((value == null) ? ";" : value.toString() );
         return renderButton;
@@ -62,10 +56,10 @@ class rowsCountBtn extends AbstractCellEditor implements TableCellRenderer, Tabl
     public void actionPerformed(ActionEvent e) {
         Pg pg = new Pg();
         int row = Gui.executeTable.getSelectedRow();
-        String table = (String) Gui.executeTable.getValueAt(row, 2);
+        String table = (String) Gui.executeTable.getValueAt(row, 3);
         rowCountInTable = pg.rowsInTable(table);
         String s = String.format("%,d", rowCountInTable);
-        Gui.executeTable.setValueAt(s, row, 4);
+        Gui.executeTable.setValueAt(s, row, 5);
         fireEditingStopped();
     }
 }

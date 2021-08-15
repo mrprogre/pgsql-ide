@@ -364,16 +364,16 @@ public class Gui extends JFrame {
         });
 
         // Список таблиц пользователя
-        Object[] executeColumns = {"Num", "Fav", "Name", "Σ", "Rows", "Type", "Info", " "};
+        Object[] executeColumns = {"Num", "Fav", "Type", "Name", "Σ", "Rows", "Comments", " "};
         executeModel = new DefaultTableModel(new Object[][]{
         }, executeColumns) {
-            final boolean[] columnEditables = new boolean[]{false, true, false, true, false, false, true, true};
+            final boolean[] columnEditables = new boolean[]{false, true, false, false, true, false, true, true};
 
             public boolean isCellEditable(int row, int column) {
                 return this.columnEditables[column];
             }
 
-            final Class[] types = {Integer.class, Boolean.class, String.class, Button.class, String.class, String.class, String.class, Button.class};
+            final Class[] types = {Integer.class, Boolean.class, String.class, String.class, Button.class, String.class, String.class, Button.class};
 
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -381,9 +381,9 @@ public class Gui extends JFrame {
             }
         };
         executeTable = new JTable(executeModel);
-        executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 3));
+        executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 4));
         executeTable.getColumn(" ").setCellRenderer(new saveInfoBtn(executeTable, 7));
-        executeTable.setDefaultRenderer(Object.class, new TableInfoRenderer());
+        executeTable.setDefaultRenderer(String.class, new TableInfoRenderer());
         executeTable.setAutoCreateRowSorter(true);
         executeColumnModel = executeTable.getColumnModel();
         // cell border color
@@ -412,12 +412,13 @@ public class Gui extends JFrame {
         Renderer.setHorizontalAlignment(JLabel.CENTER);
         executeTable.getColumn("Num").setCellRenderer(Renderer);
         executeTable.getColumn("Num").setMaxWidth(40);
+        executeTable.getColumn("Type").setCellRenderer(Renderer);
         executeTable.getColumn("Name").setPreferredWidth(300);
         executeTable.getColumn("Fav").setPreferredWidth(40);
         executeTable.getColumn("Rows").setPreferredWidth(120);
         executeTable.getColumn("Rows").setCellRenderer(Renderer);
         executeTable.getColumn("Σ").setMaxWidth(30);
-        executeTable.getColumn("Info").setPreferredWidth(120);
+        executeTable.getColumn("Comments").setPreferredWidth(120);
         executeTable.getColumn(" ").setMaxWidth(30);
         executeTable.setRowHeight(22);
         executeTable.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -443,12 +444,12 @@ public class Gui extends JFrame {
                     }
                 }
 
-                if (e.getClickCount() == 2) {
+                if (e.getClickCount() == 2 && executeTable.getSelectedColumn() == 3) {
                     if (executeModel.getRowCount() > 0) {
                         int row = executeTable.getSelectedRow();
-                        String tableName = executeTable.getValueAt(row, 2).toString();
+                        String tableName = executeTable.getValueAt(row, 3).toString();
                         pg.getUserColumns(tableName);
-                        String objectType = executeTable.getValueAt(row, 5).toString();
+                        String objectType = executeTable.getValueAt(row, 2).toString();
                         // Получаем название таблицы на которой построен matview
                         if (objectType.equals("matview")) {
                             String matViewDefinition = "SELECT definition FROM pg_matviews WHERE matviewname = '" + tableName + "' ORDER BY schemaname, matviewname";
@@ -1086,14 +1087,11 @@ public class Gui extends JFrame {
             } else if (column == 1) {
                 setForeground(new Color(159, 95, 0));
                 setHorizontalAlignment(CENTER);
-            } else if (column == 2) {
+            } else if (column == 3) {
                 setForeground(new Color(161, 0, 0));
                 setHorizontalAlignment(CENTER);
-            } else if (column == 4) {
+            } else if (column == 5) {
                 setForeground(new Color(2, 89, 22));
-                setHorizontalAlignment(CENTER);
-            } else if (column == 6) {
-                setForeground(new Color(84, 84, 84));
                 setHorizontalAlignment(CENTER);
             } else {
                 setForeground(new Color(0, 0, 0));
@@ -1134,12 +1132,12 @@ public class Gui extends JFrame {
 
             JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
 
-            if (column == 2 || column == 6) c.setHorizontalAlignment(LEFT);
+            if (column == 3 || column == 6) c.setHorizontalAlignment(LEFT);
             else c.setHorizontalAlignment(CENTER);
 
-            if (row % 2 == 0 && column != 6) {
+            if (row % 2 == 0) {
                 c.setBackground(new Color(232, 246, 255));
-            } else if (row % 2 == 1 && column != 6) {
+            } else if (row % 2 == 1) {
                 c.setBackground(new Color(255, 252, 232));
             } else {
                 c.setBackground(new Color(255, 255, 255));
@@ -1152,7 +1150,7 @@ public class Gui extends JFrame {
         }
     }
 
-    // Столбец с названием таблиц
+    // Правая панель
     static class SelectTableInfoRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
@@ -1171,6 +1169,7 @@ public class Gui extends JFrame {
             if (isSelected) {
                 setBackground(new Color(175, 175, 175));
             }
+            c.setHorizontalAlignment(LEFT);
             return c;
         }
     }
