@@ -364,16 +364,17 @@ public class Gui extends JFrame {
         });
 
         // Список таблиц пользователя
-        Object[] executeColumns = {"Num", "Fav", "Type", "Name", "Σ", "Rows", "Comments", " "};
+        //Object[] executeColumns = {"Num", "Fav", "Type", "Name", "Σ", "Rows", "Comments", " "};
+        Object[] executeColumns = {"Num", "Fav", "Type", "Name", "Comments", " ", "Rows", "Σ"};
         executeModel = new DefaultTableModel(new Object[][]{
         }, executeColumns) {
-            final boolean[] columnEditables = new boolean[]{false, true, false, false, true, false, true, true};
+            final boolean[] columnEditables = new boolean[]{false, true, false, false, true, true, false, true};
 
             public boolean isCellEditable(int row, int column) {
                 return this.columnEditables[column];
             }
 
-            final Class[] types = {Integer.class, Boolean.class, String.class, String.class, Button.class, String.class, String.class, Button.class};
+            final Class[] types = {Integer.class, Boolean.class, String.class, String.class, String.class, Button.class, String.class, Button.class};
 
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -381,8 +382,8 @@ public class Gui extends JFrame {
             }
         };
         executeTable = new JTable(executeModel);
-        executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 4));
-        executeTable.getColumn(" ").setCellRenderer(new saveInfoBtn(executeTable, 7));
+        executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 7));
+        executeTable.getColumn(" ").setCellRenderer(new saveInfoBtn(executeTable, 5));
         executeTable.setDefaultRenderer(String.class, new TableInfoRenderer());
         executeTable.setAutoCreateRowSorter(true);
         executeColumnModel = executeTable.getColumnModel();
@@ -434,7 +435,7 @@ public class Gui extends JFrame {
                     String[] favTables = common.getFavoriteFromFile();
                     int rowIdx = executeTable.getSelectedRow();
                     if (executeModel.getRowCount() > 0) {
-                        String favTable = executeTable.getValueAt(rowIdx, 2).toString();
+                        String favTable = executeTable.getValueAt(rowIdx, 3).toString();
                         boolean inFavorites = Arrays.asList(favTables).contains(favTable);
                         if (e.getClickCount() == 1 && !inFavorites) {
                             common.writeToConfig("favorite_table", favTable);
@@ -1090,7 +1091,7 @@ public class Gui extends JFrame {
             } else if (column == 3) {
                 setForeground(new Color(161, 0, 0));
                 setHorizontalAlignment(CENTER);
-            } else if (column == 5) {
+            } else if (column == 6) {
                 setForeground(new Color(2, 89, 22));
                 setHorizontalAlignment(CENTER);
             } else {
@@ -1132,12 +1133,12 @@ public class Gui extends JFrame {
 
             JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
 
-            if (column == 3 || column == 6) c.setHorizontalAlignment(LEFT);
+            if (column == 3 || column == 4) c.setHorizontalAlignment(LEFT);
             else c.setHorizontalAlignment(CENTER);
 
-            if (row % 2 == 0) {
+            if (row % 2 == 0 && column != 4) {
                 c.setBackground(new Color(232, 246, 255));
-            } else if (row % 2 == 1) {
+            } else if (row % 2 == 1 && column != 4) {
                 c.setBackground(new Color(255, 252, 232));
             } else {
                 c.setBackground(new Color(255, 255, 255));

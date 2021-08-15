@@ -29,7 +29,7 @@ class rowsCountBtn extends AbstractCellEditor implements TableCellRenderer, Tabl
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         ImageIcon sumIcon1 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/sum1.png")));
-        ImageIcon sumIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/sum2.png")));
+        ImageIcon sumIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/left.png")));
         if (hasFocus) {
             renderButton.setForeground(table.getForeground());
             renderButton.setBackground(UIManager.getColor("Button.background"));
@@ -59,7 +59,7 @@ class rowsCountBtn extends AbstractCellEditor implements TableCellRenderer, Tabl
         String table = (String) Gui.executeTable.getValueAt(row, 3);
         rowCountInTable = pg.rowsInTable(table);
         String s = String.format("%,d", rowCountInTable);
-        Gui.executeTable.setValueAt(s, row, 5);
+        Gui.executeTable.setValueAt(s, row, 6);
         fireEditingStopped();
     }
 }

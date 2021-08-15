@@ -58,7 +58,7 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
         c.deleteFromFavorites(currentTable + ":info");
         String tabInfo;
         try {
-            tabInfo = Gui.executeTable.getValueAt(rowIdx, 6).toString();
+            tabInfo = Gui.executeTable.getValueAt(rowIdx, 4).toString();
             assert tabInfo != null;
             if (tabInfo.length() > 0) {
                 c.writeToConfig(currentTable + ":info", tabInfo);
