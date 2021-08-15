@@ -271,237 +271,6 @@ public class Gui extends JFrame {
         splitVertical.setDividerLocation(690);
         splitPane.setRightComponent(splitVertical);
 
-        // Текстовая область
-        textArea = new JTextArea("select * from flight limit 100");
-        textArea.setEnabled(false);
-        textArea.setFont(new Font("Tahoma", Font.BOLD, 13));
-        textArea.setLineWrap(true);
-        textArea.setBackground(new Color(255, 243, 243));
-        rightPanelBottom.setViewportView(textArea);
-        textArea.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == 120) { // F9
-                    // Определяем название таблицы
-                    List<String> allTablesFromQuery = common.getTableName(textArea.getText());
-                    String tableName = allTablesFromQuery.get(0);
-                    List<SelectItem> allColumnsFromQuery = common.getColumns(textArea.getText()); //TODO ограничить селект кол-вом столбцов, узнать их типы
-                    pg.getUserColumns(tableName);
-
-                    Object[] selectTableColumns = pg.userColumns.toArray();
-                    selectModel = new DefaultTableModel(new Object[][]{
-                    }, selectTableColumns) {
-                        // Сортировка в любой таблице по любому типу столбца
-                        final Class[] types = common.typeClass(pg.types);
-
-                        @Override
-                        public Class getColumnClass(int columnIndex) {
-                            return this.types[columnIndex];
-                        }
-
-                        final boolean[] columnEditables = new boolean[pg.types.size()];
-
-                        @Override
-                        public boolean isCellEditable(int row, int column) {
-                            return this.columnEditables[column];
-                        }
-                    };
-                    selectTable = new JTable(selectModel);
-                    selectTable.setDefaultRenderer(Object.class, new SelectTableInfoRenderer());
-                    selectTable.setDefaultRenderer(Date.class, new SelectTableInfoRenderer());
-                    selectTable.setDefaultRenderer(Number.class, new SelectTableInfoRenderer());
-                    selectTable.setDefaultRenderer(Boolean.class, new SelectTableInfoRenderer());
-                    selectColumnModel = selectTable.getColumnModel();
-                    selectTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                    selectTable.setAutoCreateRowSorter(true);
-                    //headers
-                    JTableHeader selectHeader = selectTable.getTableHeader();
-                    selectTable.getTableHeader().setReorderingAllowed(false);
-                    selectHeader.setFont(new Font("Tahoma", Font.BOLD, 13));
-                    // высота заголовка
-                    selectTable.getTableHeader().setPreferredSize(
-                            new Dimension(rightPanelTop.getHeight(), 26)
-                    );
-                    //Cell alignment
-                    DefaultTableCellRenderer executeRenderer = new DefaultTableCellRenderer();
-                    executeRenderer.setHorizontalAlignment(JLabel.CENTER);
-                    selectTable.setRowHeight(20);
-                    selectTable.setColumnSelectionAllowed(true);
-                    selectTable.setCellSelectionEnabled(true);
-                    selectTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-                    selectTable.setFont(new Font("SansSerif", Font.PLAIN, 13));
-                    // Colors
-                    selectTable.setForeground(Color.black);
-                    selectTable.setSelectionForeground(new Color(26, 79, 164));
-                    selectTable.setSelectionBackground(new Color(255, 255, 160));
-                    // ширина всех столбцов
-                    for (int i = 0; i < pg.userColumns.size(); i++) {
-                        switch (pg.types.get(i)) {
-                            case "int4":
-                            case "int8":
-                                selectTable.getColumnModel().getColumn(i).setPreferredWidth(60);
-                                break;
-                            case "date":
-                            case "timestamp":
-                                selectTable.getColumnModel().getColumn(i).setPreferredWidth(130);
-                                break;
-                        }
-                    }
-                    rightPanelTop.setViewportView(selectTable);
-                    //
-                    if (selectModel.getColumnCount() > 0) selectModel.setRowCount(0);
-                    pg.selectFromTable(tableName, "table");
-
-                    selectTable.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            // двойным кликом выделить всю строку
-                            if (e.getClickCount() == 2) {
-                                selectTable.setColumnSelectionInterval(0, selectTable.getColumnCount() - 1);
-                            }
-
-                            // правая кнопка - контекстное меню TODO добавить в таблицу по обычному селекту и удалять диапазон при включённом фильтре
-                            if (SwingUtilities.isRightMouseButton(e)) {
-                                final JPopupMenu popup = new JPopupMenu();
-                                // copy (menu)
-                                JMenuItem menuCopy = new JMenuItem("Copy");
-                                menuCopy.addActionListener((e2) -> {
-                                    StringBuilder sbf = new StringBuilder();
-                                    int numCols = selectTable.getSelectedColumnCount();
-                                    int numRows = selectTable.getSelectedRowCount();
-                                    int[] rowsSelected = selectTable.getSelectedRows();
-                                    int[] colsSelected = selectTable.getSelectedColumns();
-                                    for (int i = 0; i < numRows; ++i) {
-                                        for (int j = 0; j < numCols; ++j) {
-                                            sbf.append(selectTable.getValueAt(rowsSelected[i], colsSelected[j]));
-                                            if (j < numCols - 1) {
-                                                sbf.append(" ");
-                                            }
-                                        }
-                                        sbf.append("\n");
-                                    }
-                                    StringSelection stsel = new StringSelection(sbf.toString());
-                                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                                    clipboard.setContents(stsel, stsel);
-                                });
-                                popup.add(menuCopy);
-
-                                // Delete rows (menu)
-                                JMenuItem menuDeleteRow = new JMenuItem("Delete");
-                                menuDeleteRow.addActionListener((e2) -> {
-                                    int numRows = selectTable.getSelectedRowCount();
-
-                                    if (numRows > 1) {
-                                        int[] rows = selectTable.getSelectedRows();
-                                        for (int i = rows.length - 1; i >= 0; --i) {
-                                            selectModel.removeRow(rows[i]);
-                                        }
-                                    } else {
-                                        int row = selectTable.convertRowIndexToModel(selectTable.rowAtPoint(e.getPoint()));
-                                        selectModel.removeRow(row);
-                                    }
-                                });
-                                popup.add(menuDeleteRow);
-
-                                popup.show(selectTable, e.getX(), e.getY());
-                            }
-                        }
-                    });
-
-
-                    // popup menu
-                    JPopupMenu selectHeadersMenu = new JPopupMenu();
-
-                    selectHeader.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseReleased(MouseEvent e) {
-                            if (SwingUtilities.isRightMouseButton(e)) {
-                                headerX = e.getX();
-                                headerY = e.getY();
-                                selectHeadersMenu.show(selectHeader, headerX, headerY);
-                            }
-                        }
-                    });
-                    // 1 Copy header
-                    JMenuItem itemCopyHeader = new JMenuItem("Copy header");
-                    itemCopyHeader.setBackground(new Color(255, 240, 246));
-                    itemCopyHeader.addActionListener(e1 -> {
-                        String header = selectTable.getColumnName(selectColumnModel.getColumnIndexAtX(headerX));
-                        StringSelection stringSelection = new StringSelection(header);
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(stringSelection, null);
-                    });
-                    selectHeadersMenu.add(itemCopyHeader);
-                    // 2 Copy headers
-                    JMenuItem itemCopyHeaders = new JMenuItem("Copy all headers");
-                    itemCopyHeaders.setBackground(new Color(255, 254, 240));
-                    itemCopyHeaders.addActionListener(e2 -> {
-                        Enumeration<TableColumn> cols = selectColumnModel.getColumns();
-                        StringBuilder columns = new StringBuilder();
-                        while (cols.hasMoreElements()) {
-                            TableColumn column = cols.nextElement();
-                            columns.append(column.getHeaderValue()).append(", ");
-                        }
-                        StringSelection stringSelection = new StringSelection(columns.substring(0, columns.length() - 2));
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(stringSelection, null);
-                    });
-                    selectHeadersMenu.add(itemCopyHeaders);
-                    // 3 Copy data as row
-                    JMenuItem itemCopydataRows = new JMenuItem("Copy data as row");
-                    itemCopydataRows.setBackground(new Color(240, 251, 255));
-                    itemCopydataRows.addActionListener(e3 -> {
-                        selectTable.setRowSelectionInterval(0, selectTable.getRowCount() - 1);
-                        int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
-
-                        StringBuilder rows = new StringBuilder();
-                        for (int i = 0; i < selectTable.getRowCount(); i++) {
-                            rows.append(selectTable.getValueAt(i, columnIndex)).append(", ");
-                        }
-                        StringSelection stringSelection = new StringSelection(rows.substring(0, rows.length() - 2));
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(stringSelection, null);
-                    });
-                    selectHeadersMenu.add(itemCopydataRows);
-                    // 4 Copy data as column
-                    JMenuItem itemCopydataColumns = new JMenuItem("Copy data as column");
-                    itemCopydataColumns.setBackground(new Color(241, 253, 239));
-                    itemCopydataColumns.addActionListener(e4 -> {
-                        selectTable.setRowSelectionInterval(0, selectTable.getRowCount() - 1);
-                        int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
-
-                        StringBuilder rows = new StringBuilder();
-                        for (int i = 0; i < selectTable.getRowCount(); i++) {
-                            rows.append(selectTable.getValueAt(i, columnIndex)).append("\n");
-                        }
-                        StringSelection stringSelection = new StringSelection(rows.toString());
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(stringSelection, null);
-
-                    });
-                    selectHeadersMenu.add(itemCopydataColumns);
-                    // 5 Copy data as expression
-                    JMenuItem itemCopydataAsExptression = new JMenuItem("Copy data as expression");
-                    itemCopydataAsExptression.setBackground(new Color(255, 243, 232));
-                    itemCopydataAsExptression.addActionListener(e5 -> {
-                        //selectTable.setRowSelectionInterval(0, selectTable.getRowCount() - 1);
-                        int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
-
-                        StringBuilder rows = new StringBuilder();
-                        rows.append("in (");
-                        for (int i = 0; i < selectTable.getRowCount(); i++) {
-                            rows.append("'").append(selectTable.getValueAt(i, columnIndex)).append("', ");
-                        }
-                        StringSelection stringSelection = new StringSelection(rows.substring(0, rows.length() - 2) + ");");
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(stringSelection, null);
-
-                    });
-                    selectHeadersMenu.add(itemCopydataAsExptression);
-                    pg.select(textArea.getText().replaceAll("\n", " "));
-                }
-            }
-        });
-
         // Refresh button
         JButton refreshBtn = new JButton(refreshIcon);
         refreshBtn.setToolTipText("Refresh");
@@ -736,9 +505,6 @@ public class Gui extends JFrame {
                         selectTable.getTableHeader().setPreferredSize(
                                 new Dimension(rightPanelTop.getHeight(), 26)
                         );
-                        //Cell alignment
-                        //DefaultTableCellRenderer executeRenderer = new DefaultTableCellRenderer();
-                        //executeRenderer.setHorizontalAlignment(JLabel.CENTER);
                         selectTable.setRowHeight(20);
                         selectTable.setDefaultRenderer(Object.class, new SelectTableInfoRenderer());
                         selectTable.setDefaultRenderer(Date.class, new SelectTableInfoRenderer());
@@ -974,6 +740,237 @@ public class Gui extends JFrame {
             clipboard.setContents(stringSelection, null);
         });
         executeHeadersMenu.add(itemClose);
+
+        // Текстовая область
+        textArea = new JTextArea("select * from flight limit 100");
+        textArea.setEnabled(false);
+        textArea.setFont(new Font("Tahoma", Font.BOLD, 13));
+        textArea.setLineWrap(true);
+        textArea.setBackground(new Color(255, 243, 243));
+        rightPanelBottom.setViewportView(textArea);
+        textArea.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == 120) { // F9
+                    // Определяем название таблицы
+                    List<String> allTablesFromQuery = common.getTableName(textArea.getText());
+                    String tableName = allTablesFromQuery.get(0);
+                    List<SelectItem> allColumnsFromQuery = common.getColumns(textArea.getText()); //TODO ограничить селект кол-вом столбцов, узнать их типы
+                    pg.getUserColumns(tableName);
+
+                    Object[] selectTableColumns = pg.userColumns.toArray();
+                    selectModel = new DefaultTableModel(new Object[][]{
+                    }, selectTableColumns) {
+                        // Сортировка в любой таблице по любому типу столбца
+                        final Class[] types = common.typeClass(pg.types);
+
+                        @Override
+                        public Class getColumnClass(int columnIndex) {
+                            return this.types[columnIndex];
+                        }
+
+                        final boolean[] columnEditables = new boolean[pg.types.size()];
+
+                        @Override
+                        public boolean isCellEditable(int row, int column) {
+                            return this.columnEditables[column];
+                        }
+                    };
+                    selectTable = new JTable(selectModel);
+                    selectTable.setDefaultRenderer(Object.class, new SelectTableInfoRenderer());
+                    selectTable.setDefaultRenderer(Date.class, new SelectTableInfoRenderer());
+                    selectTable.setDefaultRenderer(Number.class, new SelectTableInfoRenderer());
+                    selectTable.setDefaultRenderer(Boolean.class, new SelectTableInfoRenderer());
+                    selectColumnModel = selectTable.getColumnModel();
+                    selectTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                    selectTable.setAutoCreateRowSorter(true);
+                    //headers
+                    JTableHeader selectHeader = selectTable.getTableHeader();
+                    selectTable.getTableHeader().setReorderingAllowed(false);
+                    selectHeader.setFont(new Font("Tahoma", Font.BOLD, 13));
+                    // высота заголовка
+                    selectTable.getTableHeader().setPreferredSize(
+                            new Dimension(rightPanelTop.getHeight(), 26)
+                    );
+                    //Cell alignment
+                    DefaultTableCellRenderer executeRenderer = new DefaultTableCellRenderer();
+                    executeRenderer.setHorizontalAlignment(JLabel.CENTER);
+                    selectTable.setRowHeight(20);
+                    selectTable.setColumnSelectionAllowed(true);
+                    selectTable.setCellSelectionEnabled(true);
+                    selectTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+                    selectTable.setFont(new Font("SansSerif", Font.PLAIN, 13));
+                    // Colors
+                    selectTable.setForeground(Color.black);
+                    selectTable.setSelectionForeground(new Color(26, 79, 164));
+                    selectTable.setSelectionBackground(new Color(255, 255, 160));
+                    // ширина всех столбцов
+                    for (int i = 0; i < pg.userColumns.size(); i++) {
+                        switch (pg.types.get(i)) {
+                            case "int4":
+                            case "int8":
+                                selectTable.getColumnModel().getColumn(i).setPreferredWidth(60);
+                                break;
+                            case "date":
+                            case "timestamp":
+                                selectTable.getColumnModel().getColumn(i).setPreferredWidth(130);
+                                break;
+                        }
+                    }
+                    rightPanelTop.setViewportView(selectTable);
+                    //
+                    if (selectModel.getColumnCount() > 0) selectModel.setRowCount(0);
+                    pg.selectFromTable(tableName, "table");
+
+                    selectTable.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            // двойным кликом выделить всю строку
+                            if (e.getClickCount() == 2) {
+                                selectTable.setColumnSelectionInterval(0, selectTable.getColumnCount() - 1);
+                            }
+
+                            // правая кнопка - контекстное меню TODO добавить в таблицу по обычному селекту и удалять диапазон при включённом фильтре
+                            if (SwingUtilities.isRightMouseButton(e)) {
+                                final JPopupMenu popup = new JPopupMenu();
+                                // copy (menu)
+                                JMenuItem menuCopy = new JMenuItem("Copy");
+                                menuCopy.addActionListener((e2) -> {
+                                    StringBuilder sbf = new StringBuilder();
+                                    int numCols = selectTable.getSelectedColumnCount();
+                                    int numRows = selectTable.getSelectedRowCount();
+                                    int[] rowsSelected = selectTable.getSelectedRows();
+                                    int[] colsSelected = selectTable.getSelectedColumns();
+                                    for (int i = 0; i < numRows; ++i) {
+                                        for (int j = 0; j < numCols; ++j) {
+                                            sbf.append(selectTable.getValueAt(rowsSelected[i], colsSelected[j]));
+                                            if (j < numCols - 1) {
+                                                sbf.append(" ");
+                                            }
+                                        }
+                                        sbf.append("\n");
+                                    }
+                                    StringSelection stsel = new StringSelection(sbf.toString());
+                                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                                    clipboard.setContents(stsel, stsel);
+                                });
+                                popup.add(menuCopy);
+
+                                // Delete rows (menu)
+                                JMenuItem menuDeleteRow = new JMenuItem("Delete");
+                                menuDeleteRow.addActionListener((e2) -> {
+                                    int numRows = selectTable.getSelectedRowCount();
+
+                                    if (numRows > 1) {
+                                        int[] rows = selectTable.getSelectedRows();
+                                        for (int i = rows.length - 1; i >= 0; --i) {
+                                            selectModel.removeRow(rows[i]);
+                                        }
+                                    } else {
+                                        int row = selectTable.convertRowIndexToModel(selectTable.rowAtPoint(e.getPoint()));
+                                        selectModel.removeRow(row);
+                                    }
+                                });
+                                popup.add(menuDeleteRow);
+
+                                popup.show(selectTable, e.getX(), e.getY());
+                            }
+                        }
+                    });
+
+
+                    // popup menu
+                    JPopupMenu selectHeadersMenu = new JPopupMenu();
+
+                    selectHeader.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+                            if (SwingUtilities.isRightMouseButton(e)) {
+                                headerX = e.getX();
+                                headerY = e.getY();
+                                selectHeadersMenu.show(selectHeader, headerX, headerY);
+                            }
+                        }
+                    });
+                    // 1 Copy header
+                    JMenuItem itemCopyHeader = new JMenuItem("Copy header");
+                    itemCopyHeader.setBackground(new Color(255, 240, 246));
+                    itemCopyHeader.addActionListener(e1 -> {
+                        String header = selectTable.getColumnName(selectColumnModel.getColumnIndexAtX(headerX));
+                        StringSelection stringSelection = new StringSelection(header);
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        clipboard.setContents(stringSelection, null);
+                    });
+                    selectHeadersMenu.add(itemCopyHeader);
+                    // 2 Copy headers
+                    JMenuItem itemCopyHeaders = new JMenuItem("Copy all headers");
+                    itemCopyHeaders.setBackground(new Color(255, 254, 240));
+                    itemCopyHeaders.addActionListener(e2 -> {
+                        Enumeration<TableColumn> cols = selectColumnModel.getColumns();
+                        StringBuilder columns = new StringBuilder();
+                        while (cols.hasMoreElements()) {
+                            TableColumn column = cols.nextElement();
+                            columns.append(column.getHeaderValue()).append(", ");
+                        }
+                        StringSelection stringSelection = new StringSelection(columns.substring(0, columns.length() - 2));
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        clipboard.setContents(stringSelection, null);
+                    });
+                    selectHeadersMenu.add(itemCopyHeaders);
+                    // 3 Copy data as row
+                    JMenuItem itemCopydataRows = new JMenuItem("Copy data as row");
+                    itemCopydataRows.setBackground(new Color(240, 251, 255));
+                    itemCopydataRows.addActionListener(e3 -> {
+                        selectTable.setRowSelectionInterval(0, selectTable.getRowCount() - 1);
+                        int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
+
+                        StringBuilder rows = new StringBuilder();
+                        for (int i = 0; i < selectTable.getRowCount(); i++) {
+                            rows.append(selectTable.getValueAt(i, columnIndex)).append(", ");
+                        }
+                        StringSelection stringSelection = new StringSelection(rows.substring(0, rows.length() - 2));
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        clipboard.setContents(stringSelection, null);
+                    });
+                    selectHeadersMenu.add(itemCopydataRows);
+                    // 4 Copy data as column
+                    JMenuItem itemCopydataColumns = new JMenuItem("Copy data as column");
+                    itemCopydataColumns.setBackground(new Color(241, 253, 239));
+                    itemCopydataColumns.addActionListener(e4 -> {
+                        selectTable.setRowSelectionInterval(0, selectTable.getRowCount() - 1);
+                        int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
+
+                        StringBuilder rows = new StringBuilder();
+                        for (int i = 0; i < selectTable.getRowCount(); i++) {
+                            rows.append(selectTable.getValueAt(i, columnIndex)).append("\n");
+                        }
+                        StringSelection stringSelection = new StringSelection(rows.toString());
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        clipboard.setContents(stringSelection, null);
+
+                    });
+                    selectHeadersMenu.add(itemCopydataColumns);
+                    // 5 Copy data as expression
+                    JMenuItem itemCopydataAsExptression = new JMenuItem("Copy data as expression");
+                    itemCopydataAsExptression.setBackground(new Color(255, 243, 232));
+                    itemCopydataAsExptression.addActionListener(e5 -> {
+                        //selectTable.setRowSelectionInterval(0, selectTable.getRowCount() - 1);
+                        int columnIndex = selectColumnModel.getColumnIndexAtX(headerX);
+
+                        StringBuilder rows = new StringBuilder();
+                        rows.append("in (");
+                        for (int i = 0; i < selectTable.getRowCount(); i++) {
+                            rows.append("'").append(selectTable.getValueAt(i, columnIndex)).append("', ");
+                        }
+                        StringSelection stringSelection = new StringSelection(rows.substring(0, rows.length() - 2) + ");");
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        clipboard.setContents(stringSelection, null);
+
+                    });
+                    selectHeadersMenu.add(itemCopydataAsExptression);
+                    pg.select(textArea.getText().replaceAll("\n", " "));
+                }
+            }
+        });
 
         // Лимит строк в селекте из файла config.txt
         JLabel configParamsLabel = new JLabel("user " + pg.user.toUpperCase()
