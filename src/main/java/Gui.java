@@ -292,11 +292,14 @@ public class Gui extends JFrame {
                     }, selectTableColumns) {
                         // Сортировка в любой таблице по любому типу столбца
                         final Class[] types = common.typeClass(pg.types);
+
                         @Override
                         public Class getColumnClass(int columnIndex) {
                             return this.types[columnIndex];
                         }
+
                         final boolean[] columnEditables = new boolean[pg.types.size()];
+
                         @Override
                         public boolean isCellEditable(int row, int column) {
                             return this.columnEditables[column];
@@ -660,11 +663,14 @@ public class Gui extends JFrame {
                         }, selectTableColumns) {
                             // Сортировка в любой таблице по любому типу столбца
                             final Class[] types = common.typeClass(pg.types);
+
                             @Override
                             public Class getColumnClass(int columnIndex) {
                                 return this.types[columnIndex];
                             }
+
                             final boolean[] columnEditables = new boolean[pg.types.size()];
+
                             @Override
                             public boolean isCellEditable(int row, int column) {
                                 return this.columnEditables[column];
@@ -719,8 +725,55 @@ public class Gui extends JFrame {
                         selectTable.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
-                                if (SwingUtilities.isRightMouseButton(e)) {
+                                // двойным кликом выделить всю строку
+                                if (e.getClickCount() == 2) {
                                     selectTable.setColumnSelectionInterval(0, selectTable.getColumnCount() - 1);
+                                }
+
+                                // правая кнопка - контекстное меню TODO добавить в таблицу по обычному селекту и удалять диапазон при включённом фильтре
+                                if (SwingUtilities.isRightMouseButton(e)) {
+                                    final JPopupMenu popup = new JPopupMenu();
+                                    // copy (menu)
+                                    JMenuItem menuCopy = new JMenuItem("Copy");
+                                    menuCopy.addActionListener((e2) -> {
+                                        StringBuilder sbf = new StringBuilder();
+                                        int numCols = selectTable.getSelectedColumnCount();
+                                        int numRows = selectTable.getSelectedRowCount();
+                                        int[] rowsSelected = selectTable.getSelectedRows();
+                                        int[] colsSelected = selectTable.getSelectedColumns();
+                                        for (int i = 0; i < numRows; ++i) {
+                                            for (int j = 0; j < numCols; ++j) {
+                                                sbf.append(selectTable.getValueAt(rowsSelected[i], colsSelected[j]));
+                                                if (j < numCols - 1) {
+                                                    sbf.append(" ");
+                                                }
+                                            }
+                                            sbf.append("\n");
+                                        }
+                                        StringSelection stsel = new StringSelection(sbf.toString());
+                                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                                        clipboard.setContents(stsel, stsel);
+                                    });
+                                    popup.add(menuCopy);
+
+                                    // Delete rows (menu)
+                                    JMenuItem menuDeleteRow = new JMenuItem("Delete");
+                                    menuDeleteRow.addActionListener((e2) -> {
+                                        int numRows = selectTable.getSelectedRowCount();
+
+                                        if (numRows > 1) {
+                                            int[] rows = selectTable.getSelectedRows();
+                                            for (int i = rows.length - 1; i >= 0; --i) {
+                                                selectModel.removeRow(rows[i]);
+                                            }
+                                        } else {
+                                            int row = selectTable.convertRowIndexToModel(selectTable.rowAtPoint(e.getPoint()));
+                                            selectModel.removeRow(row);
+                                        }
+                                    });
+                                    popup.add(menuDeleteRow);
+
+                                    popup.show(selectTable, e.getX(), e.getY());
                                 }
                             }
                         });
