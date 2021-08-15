@@ -31,4 +31,4 @@ I am making an IDE for Postgresql to make it easier to work with this database.
         4) данные в конкретном столбце в виде столбца без запятой
         5) данные в конкретном столбце в виде выражения: in ('data1', 'data2', 'data3')
         
-![Image alt](https://github.com/mrprogre/Pides/blob/master/gui.png)
+![Image alt](https://github.com/mrprogre/Pides/blob/master/GUI.png)
