@@ -381,7 +381,23 @@ public class Gui extends JFrame {
                 return this.types[columnIndex];
             }
         };
-        executeTable = new JTable(executeModel);
+        executeTable = new JTable(executeModel) {
+            // tooltips
+            public String getToolTipText(MouseEvent e) {
+                String tip = null;
+                java.awt.Point p = e.getPoint();
+                int rowIndex = rowAtPoint(p);
+                int column = 4;
+                try {
+                    tip = (String) getValueAt(rowIndex, column);
+                } catch (RuntimeException ignored) {
+                }
+                assert tip != null;
+                if (tip.length() > 6) {
+                    return tip;
+                } else return null;
+            }
+        };
         executeTable.getColumn("Σ").setCellRenderer(new rowsCountBtn(executeTable, 7));
         executeTable.getColumn(" ").setCellRenderer(new saveInfoBtn(executeTable, 5));
         executeTable.setDefaultRenderer(String.class, new TableInfoRenderer());
