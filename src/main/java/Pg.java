@@ -17,6 +17,7 @@ public class Pg {
     String pwd = config[2][1].trim();
     int rowsLimitFromConfig = Integer.parseInt(config[3][1].trim());
     float guiOpacity = Float.parseFloat(config[4][1].trim());
+    Map <String, String> selectColumns = new LinkedHashMap<>();
 
     // Подключение к базе данных
     void connect() {
@@ -131,6 +132,7 @@ public class Pg {
     void getUserColumns(String tableName, String columns) {
         if (userColumns.size() > 0) userColumns.clear(); //?
         if (types.size() > 0) types.clear(); //?
+        selectColumns.clear();
         try {
             String sql;
             if (columns.contains("*")) {
@@ -143,7 +145,6 @@ public class Pg {
                         "and column_name in(" + columns + ") \n" +
                         "order by ordinal_position";
             }
-            System.out.println(sql);
 
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
@@ -151,6 +152,7 @@ public class Pg {
                 String column = rs.getString("column_name");
                 userColumns.add(column);
                 String udt_name = rs.getString("udt_name");
+                selectColumns.put(column, udt_name);
                 types.add(udt_name);
             }
             rs.close();
@@ -233,7 +235,6 @@ public class Pg {
     // Выполнение любого запроса
     void select(String sql) {
         try {
-            System.out.println("sql2 = " + sql);
             if (Gui.selectModel.getRowCount() > 0) Gui.selectModel.setRowCount(0);
             PreparedStatement st = connection.prepareStatement(sql.replaceAll("\n", ""));
             ResultSet rs = st.executeQuery();
@@ -243,6 +244,11 @@ public class Pg {
                 columnCount = rs.getMetaData().getColumnCount();
             } else {
                 columnCount = cols.size();
+            }
+
+            types.clear();
+            for (int i = 0; i < selectColumns.size(); i++) {
+                types.add(selectColumns.get(userColumns.get(i)));
             }
 
             while (rs.next()) {

@@ -1,6 +1,4 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.sf.jsqlparser.statement.select.SelectItem;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -562,7 +560,7 @@ public class Gui extends JFrame {
                                     selectTable.setColumnSelectionInterval(0, selectTable.getColumnCount() - 1);
                                 }
 
-                                // правая кнопка - контекстное меню TODO добавить в таблицу по обычному селекту и удалять диапазон при включённом фильтре
+                                // правая кнопка - контекстное меню
                                 if (SwingUtilities.isRightMouseButton(e)) {
                                     final JPopupMenu popup = new JPopupMenu();
                                     // copy (menu)
@@ -772,8 +770,7 @@ public class Gui extends JFrame {
                     // Определяем название таблицы
                     List<String> allTablesFromQuery = common.getTableName(textArea.getText());
                     String tableName = allTablesFromQuery.get(0);
-                    List<SelectItem> allColumnsFromQuery = common.getColumns(textArea.getText()); //TODO если писать столбцы вразнобой, то результат неправильный из-за типов
-                    System.out.println(allColumnsFromQuery);
+                    List<SelectItem> allColumnsFromQuery = common.getColumns(textArea.getText());
 
                     StringBuilder columnsForQuery = new StringBuilder();
                     for (SelectItem selectItem : allColumnsFromQuery) {
@@ -783,18 +780,13 @@ public class Gui extends JFrame {
                                 .append("', ");
                     }
                     columnsForQuery = new StringBuilder(columnsForQuery.substring(0, columnsForQuery.length() - 2));
-                    System.out.println(columnsForQuery);
-
-
                     pg.getUserColumns(tableName, columnsForQuery.toString());
-
 
                     Object[] selectTableColumns = pg.userColumns.toArray();
                     selectModel = new DefaultTableModel(new Object[][]{
                     }, selectTableColumns) {
                         // Сортировка в любой таблице по любому типу столбца
                         final Class[] types = common.typeClass(pg.types);
-
                         @Override
                         public Class getColumnClass(int columnIndex) {
                             return this.types[columnIndex];
@@ -861,7 +853,7 @@ public class Gui extends JFrame {
                                 selectTable.setColumnSelectionInterval(0, selectTable.getColumnCount() - 1);
                             }
 
-                            // правая кнопка - контекстное меню TODO добавить в таблицу по обычному селекту и удалять диапазон при включённом фильтре
+                            // правая кнопка - контекстное меню
                             if (SwingUtilities.isRightMouseButton(e)) {
                                 final JPopupMenu popup = new JPopupMenu();
                                 // copy (menu)
