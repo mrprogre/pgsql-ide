@@ -1,10 +1,7 @@
 import net.sf.jsqlparser.statement.select.SelectItem;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class Pg {
     Common common = new Common();
@@ -130,7 +127,7 @@ public class Pg {
         }
     }
 
-    // Список всех столбцов текущего пользователя
+    // Список всех столбцов текущего пользователя при введённом селекте
     void getUserColumns(String tableName, String columns) {
         if (userColumns.size() > 0) userColumns.clear(); //?
         if (types.size() > 0) types.clear(); //?
@@ -146,6 +143,8 @@ public class Pg {
                         "and column_name in(" + columns + ") \n" +
                         "order by ordinal_position";
             }
+            System.out.println(sql);
+
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -160,7 +159,6 @@ public class Pg {
             sql.printStackTrace();
         }
     }
-
 
     // Данные из выбранной таблицы
     void selectFromTable(String table, String object) {
@@ -235,6 +233,7 @@ public class Pg {
     // Выполнение любого запроса
     void select(String sql) {
         try {
+            System.out.println("sql2 = " + sql);
             if (Gui.selectModel.getRowCount() > 0) Gui.selectModel.setRowCount(0);
             PreparedStatement st = connection.prepareStatement(sql.replaceAll("\n", ""));
             ResultSet rs = st.executeQuery();

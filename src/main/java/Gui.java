@@ -760,7 +760,7 @@ public class Gui extends JFrame {
         executeHeadersMenu.add(itemClose);
 
         // Текстовая область
-        textArea = new JTextArea("select ori_airport, id, status from flight limit 100");
+        textArea = new JTextArea("select ori_airport, id, status from flight limit 2");
         textArea.setEnabled(false);
         textArea.setFont(new Font("Tahoma", Font.BOLD, 13));
         textArea.setLineWrap(true);
@@ -787,6 +787,7 @@ public class Gui extends JFrame {
 
 
                     pg.getUserColumns(tableName, columnsForQuery.toString());
+
 
                     Object[] selectTableColumns = pg.userColumns.toArray();
                     selectModel = new DefaultTableModel(new Object[][]{
@@ -998,6 +999,7 @@ public class Gui extends JFrame {
 
                     });
                     selectHeadersMenu.add(itemCopydataAsExptression);
+
                     pg.select(textArea.getText().replaceAll("\n", " "));
                 }
             }
