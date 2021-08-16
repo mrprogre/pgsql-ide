@@ -758,7 +758,7 @@ public class Gui extends JFrame {
         executeHeadersMenu.add(itemClose);
 
         // Текстовая область
-        textArea = new JTextArea("select ori_airport, id, status from flight limit 2");
+        textArea = new JTextArea("select * from flight limit 90");
         textArea.setEnabled(false);
         textArea.setFont(new Font("Tahoma", Font.BOLD, 13));
         textArea.setLineWrap(true);
