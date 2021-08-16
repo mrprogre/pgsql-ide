@@ -1,5 +1,5 @@
 # PIDES = Postgresql + IDE + Sql
-I am making an IDE for Postgresql to make it easier to work with this database.
+I made an IDE for Postgresql to make it easier to work with this database.
 
 1) настройки открываются кнопкой с шестерёнкой в(C:\Users\Public\Documents\Pides\config.txt)
 2) избранные таблицы, отмеченные галочкой, а также комментарии сохраняются в файл C:\Users\Public\Documents\Pides\favorite.txt
