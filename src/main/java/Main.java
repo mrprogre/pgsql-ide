@@ -7,7 +7,7 @@ public class Main {
     static String configPath = directoryPath + "config.txt";
     static String favoritePath = directoryPath + "favorite.txt";
     // linux
-    static String linuxPath = "./Pides/";
+    static String linuxPath = "./";
     static String linuxConfigPath = linuxPath + "config.txt";
     static String linuxFavoritePath = linuxPath + "favorite.txt";
     static String OS = OSValidator.getOS();
@@ -42,7 +42,7 @@ public class Main {
                 }
                 if (!configFile.exists()) {
                     Common common = new Common();
-                    common.copyFiles(Main.class.getResource("config.txt"), directoryPath + "config.txt");
+                    common.copyFiles(Main.class.getResource("config.txt"), linuxPath + "config.txt");
                 }
                 if (!favoriteFile.exists()) {
                     favoriteFile.createNewFile();

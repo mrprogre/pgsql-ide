@@ -83,7 +83,7 @@ public class Common {
         if (Main.OS.contains("win")) {
             path = Main.configPath;
         } else if (Main.OS.contains("uni")) {
-            path = Main.linuxPath;
+            path = Main.linuxConfigPath;
         }
 
         int rowsCount = countLines(path);
