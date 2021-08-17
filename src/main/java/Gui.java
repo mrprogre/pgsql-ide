@@ -95,7 +95,7 @@ public class Gui extends JFrame {
 
         // Прозрачность окна
         this.setUndecorated(true);
-        this.setOpacity(pg.guiOpacity);
+        if (OSValidator.getOS().contains("win")) this.setOpacity(pg.guiOpacity);
 
         // Открыть файл config.txt
         JButton editConfig = new JButton(configIcon);
@@ -110,7 +110,13 @@ public class Gui extends JFrame {
         editConfig.addActionListener(e -> {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
                 try {
-                    Desktop.getDesktop().open(new File(Main.configPath));
+                    String path = null;
+                    if (Main.OS.contains("win")) {
+                        path = Main.configPath;
+                    } else if (Main.OS.contains("uni")) {
+                        path = Main.linuxPath;
+                    }
+                    Desktop.getDesktop().open(new File(path));
                 } catch (IOException io) {
                     io.printStackTrace();
                 }
@@ -391,7 +397,7 @@ public class Gui extends JFrame {
                 } catch (RuntimeException ignored) {
                 }
                 assert tip != null;
-                if (tip.length() > 6) {
+                if (executeModel.getRowCount() > 0 && tip.length() > 6) {
                     return tip;
                 } else return null;
             }
@@ -1000,9 +1006,9 @@ public class Gui extends JFrame {
         // Лимит строк в селекте из файла config.txt
         JLabel configParamsLabel = new JLabel("user " + pg.user.toUpperCase()
                 + ", rows limit " + pg.rowsLimitFromConfig + ", transparency "
-                + pg.guiOpacity * 100 + "%");
+                + pg.guiOpacity * 100 + "%, " + System.getProperty("os.name"));
         configParamsLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        configParamsLabel.setBounds(515, 12, 260, 20);
+        configParamsLabel.setBounds(515, 12, 400, 20);
         getContentPane().add(configParamsLabel);
 
         // Сворачивание приложения в трей
