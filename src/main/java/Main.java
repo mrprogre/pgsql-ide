@@ -7,7 +7,7 @@ public class Main {
     static String configPath = directoryPath + "config.txt";
     static String favoritePath = directoryPath + "favorite.txt";
     // linux
-    static String linuxPath = "./public/pides/";
+    static String linuxPath = "./Public/pides/";
     static String linuxConfigPath = linuxPath + "config.txt";
     static String linuxFavoritePath = linuxPath + "favorite.txt";
     static String OS = OSValidator.getOS();
