@@ -87,7 +87,7 @@ public class Pg {
                 boolean inFavorite = Arrays.asList(favTables).contains(table);
 
                 // заполнение графы Info
-                String info = null;
+                String info = " ";
                 for (String f : favTables) {
                     if (f.startsWith(table + ":info=")) {
                         info = f.substring(table.length() + 6);

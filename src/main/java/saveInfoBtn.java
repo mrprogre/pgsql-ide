@@ -63,7 +63,8 @@ class saveInfoBtn extends AbstractCellEditor implements TableCellRenderer, Table
             if (tabInfo.length() > 0) {
                 c.writeToConfig(currentTable + ":info", tabInfo);
             }
-        } catch (NullPointerException ignored) {
+        } catch (Exception x) {
+            x.printStackTrace();
         }
         fireEditingStopped();
     }
