@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.awt.GraphicsDevice.WindowTranslucency.*;
+
 public class Gui extends JFrame {
     Pg pg = new Pg();
     Common common = new Common();
@@ -93,9 +95,12 @@ public class Gui extends JFrame {
         this.getContentPane().setLayout(null);
         //this.setAlwaysOnTop(true);
 
-        // Прозрачность окна
+        // Прозрачность и оформление окна
         this.setUndecorated(true);
-        if (OSValidator.getOS().contains("win")) this.setOpacity(pg.guiOpacity);
+        // Проверка поддерживает ли операционная система прозрачность окон
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        boolean isUniformTranslucencySupported = gd.isWindowTranslucencySupported(TRANSLUCENT);
+        if (isUniformTranslucencySupported) this.setOpacity(pg.guiOpacity);
 
         // Открыть файл config.txt
         JButton editConfig = new JButton(configIcon);
@@ -110,13 +115,7 @@ public class Gui extends JFrame {
         editConfig.addActionListener(e -> {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
                 try {
-                    String path = null;
-                    if (Main.OS.contains("win")) {
-                        path = Main.configPath;
-                    } else if (Main.OS.contains("uni")) {
-                        path = Main.linuxPath;
-                    }
-                    Desktop.getDesktop().open(new File(path));
+                    Desktop.getDesktop().open(new File(Main.configPath));
                 } catch (IOException io) {
                     io.printStackTrace();
                 }
@@ -1006,7 +1005,7 @@ public class Gui extends JFrame {
         // Лимит строк в селекте из файла config.txt
         JLabel configParamsLabel = new JLabel("user " + pg.user.toUpperCase()
                 + ", rows limit " + pg.rowsLimitFromConfig + ", transparency "
-                + pg.guiOpacity * 100 + "%, " + System.getProperty("os.name"));
+                + pg.guiOpacity * 100 + "%");
         configParamsLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
         configParamsLabel.setBounds(515, 12, 400, 20);
         getContentPane().add(configParamsLabel);

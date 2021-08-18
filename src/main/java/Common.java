@@ -79,18 +79,11 @@ public class Common {
 
     // Считывание строк из файла в двумерный массив строк
     String[][] getConfig() {
-        String path = null;
-        if (Main.OS.contains("win")) {
-            path = Main.configPath;
-        } else if (Main.OS.contains("uni")) {
-            path = Main.linuxConfigPath;
-        }
-
-        int rowsCount = countLines(path);
+        int rowsCount = countLines(Main.configPath);
         String[][] lines = new String[rowsCount][];
 
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(Main.configPath), StandardCharsets.UTF_8))) {
             String line;
             int i = 0;
             while ((line = reader.readLine()) != null && i < rowsCount) {
@@ -145,14 +138,7 @@ public class Common {
 
     // Запись избранных таблиц
     void writeToConfig(String type, String text) {
-        String path = null;
-        if (Main.OS.contains("win")) {
-            path = Main.favoritePath;
-        } else if (Main.OS.contains("uni")) {
-            path = Main.linuxFavoritePath;
-        }
-
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path, true), StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(Main.favoritePath, true), StandardCharsets.UTF_8)) {
             writer.write(type + "=" + text + "\n");
             writer.flush();
         } catch (IOException e) {
@@ -162,18 +148,11 @@ public class Common {
 
     // Считывание избранных таблиц из файла
     String[] getFavoriteFromFile() {
-        String path = null;
-        if (Main.OS.contains("win")) {
-            path = Main.favoritePath;
-        } else if (Main.OS.contains("uni")) {
-            path = Main.linuxFavoritePath;
-        }
-
-        int linesAmount = countLines(path);
+        int linesAmount = countLines(Main.favoritePath);
         String[] lines = new String[linesAmount];
 
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(Main.favoritePath), StandardCharsets.UTF_8))) {
             String line;
             int i = 0;
 
@@ -192,15 +171,8 @@ public class Common {
 
     // Удаление таблицы из списка избранных таблиц
     void deleteFromFavorites(String type, String objectName) {
-        String path = null;
-        if (Main.OS.contains("win")) {
-            path = Main.favoritePath;
-        } else if (Main.OS.contains("uni")) {
-            path = Main.linuxFavoritePath;
-        }
-
         try {
-            Path input = Paths.get(path);
+            Path input = Paths.get(Main.favoritePath);
             Path temp = Files.createTempFile("temp", ".txt");
             Stream<String> lines = Files.lines(input);
             try (BufferedWriter writer = Files.newBufferedWriter(temp)) {
@@ -225,14 +197,8 @@ public class Common {
 
     // Удаление информации из таблицы
     void deleteFromFavorites(String objectName) {
-        String path = null;
-        if (Main.OS.contains("win")) {
-            path = Main.favoritePath;
-        } else if (Main.OS.contains("uni")) {
-            path = Main.linuxFavoritePath;
-        }
         try {
-            Path input = Paths.get(path);
+            Path input = Paths.get(Main.favoritePath);
             Path temp = Files.createTempFile("temp", ".txt");
             Stream<String> lines = Files.lines(input);
             try (BufferedWriter writer = Files.newBufferedWriter(temp)) {
