@@ -230,7 +230,9 @@ public class Gui extends JFrame {
         toTrayBtn.setBorderPainted(false);
         toTrayBtn.setBackground(Color.WHITE);
         toTrayBtn.setBounds(1335, 5, 24, 20);
-        getContentPane().add(toTrayBtn);
+        if (SystemTray.isSupported()) {
+            getContentPane().add(toTrayBtn);
+        }
         toTrayBtn.addActionListener(e -> {
             setVisible(false);
             isGuiInTray.set(true);
@@ -431,9 +433,11 @@ public class Gui extends JFrame {
         DefaultTableCellRenderer Renderer = new DefaultTableCellRenderer();
         Renderer.setHorizontalAlignment(JLabel.CENTER);
         executeTable.getColumn("Num").setCellRenderer(Renderer);
-        executeTable.getColumn("Num").setMaxWidth(40);
+        executeTable.getColumn("Num").setMinWidth(30);
+        executeTable.getColumn("Num").setPreferredWidth(40);
         executeTable.getColumn("Type").setCellRenderer(Renderer);
-        executeTable.getColumn("Name").setPreferredWidth(300);
+        executeTable.getColumn("Name").setPreferredWidth(290);
+        executeTable.getColumn("Fav").setMinWidth(30);
         executeTable.getColumn("Fav").setPreferredWidth(40);
         executeTable.getColumn("Rows").setPreferredWidth(120);
         executeTable.getColumn("Rows").setCellRenderer(Renderer);
@@ -1147,7 +1151,12 @@ public class Gui extends JFrame {
 
             if (comp instanceof JLabel) {
                 JLabel label = (JLabel) comp;
-                label.setFont(new Font("Consolas", Font.BOLD, 14));
+                if (OSValidator.getOS().equals("uni")){
+                    label.setFont(new Font("Consolas", Font.BOLD, 12));
+                } else {
+                    label.setFont(new Font("Consolas", Font.BOLD, 14));
+                }
+
                 label.setBorder(BorderFactory.createEtchedBorder());
                 //label.setBackground(new Color(234, 255, 225));
             }
