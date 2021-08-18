@@ -1011,42 +1011,44 @@ public class Gui extends JFrame {
         getContentPane().add(configParamsLabel);
 
         // Сворачивание приложения в трей
-        try {
-            BufferedImage iconTray = ImageIO.read(Objects.requireNonNull(Gui.class.getResourceAsStream("/icons/tray.png")));
-            final TrayIcon trayIcon = new TrayIcon(iconTray, "Pides");
-            systemTray = SystemTray.getSystemTray();
-            systemTray.add(trayIcon);
+        if (SystemTray.isSupported()) {
+            try {
+                BufferedImage iconTray = ImageIO.read(Objects.requireNonNull(Gui.class.getResourceAsStream("/icons/tray.png")));
+                final TrayIcon trayIcon = new TrayIcon(iconTray, "Pides");
+                systemTray = SystemTray.getSystemTray();
+                systemTray.add(trayIcon);
 
-            final PopupMenu trayMenu = new PopupMenu();
-            MenuItem iShow = new MenuItem("Show");
-            iShow.addActionListener(e -> {
-                setVisible(true);
-                setExtendedState(JFrame.NORMAL);
-            });
-            trayMenu.add(iShow);
+                final PopupMenu trayMenu = new PopupMenu();
+                MenuItem iShow = new MenuItem("Show");
+                iShow.addActionListener(e -> {
+                    setVisible(true);
+                    setExtendedState(JFrame.NORMAL);
+                });
+                trayMenu.add(iShow);
 
-            MenuItem iClose = new MenuItem("Close");
-            iClose.addActionListener(e -> System.exit(0));
-            trayMenu.add(iClose);
+                MenuItem iClose = new MenuItem("Close");
+                iClose.addActionListener(e -> System.exit(0));
+                trayMenu.add(iClose);
 
-            trayIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (SwingUtilities.isLeftMouseButton(e)) {
-                        setVisible(true);
-                        setExtendedState(JFrame.NORMAL);
+                trayIcon.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            setVisible(true);
+                            setExtendedState(JFrame.NORMAL);
+                        }
                     }
-                }
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    if (SwingUtilities.isRightMouseButton(e)) {
-                        trayIcon.setPopupMenu(trayMenu);
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        if (SwingUtilities.isRightMouseButton(e)) {
+                            trayIcon.setPopupMenu(trayMenu);
+                        }
                     }
-                }
-            });
-        } catch (IOException | AWTException e) {
-            e.printStackTrace();
+                });
+            } catch (IOException | AWTException e) {
+                e.printStackTrace();
+            }
         }
 
         tableCheckbox = new Checkbox("tables");
