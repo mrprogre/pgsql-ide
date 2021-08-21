@@ -10,14 +10,17 @@ public class Pg {
     List<String> userTables = new ArrayList<>();
     List<String> userTableTypes = new ArrayList<>();
     List<String> userColumns = new ArrayList<>();
+    Map<String, String> selectColumns = new LinkedHashMap<>();
     List<String> types = new ArrayList<>();
     String[][] config = common.getConfig();
     String url = config[0][1].trim();
     String user = config[1][1].trim();
     String pwd = config[2][1].trim();
     int rowsLimitFromConfig = Integer.parseInt(config[3][1].trim());
+    // Gui
     float guiOpacity = Float.parseFloat(config[4][1].trim());
-    Map <String, String> selectColumns = new LinkedHashMap<>();
+    int dividerVertical = Integer.parseInt(config[5][1].trim());
+    int dividerHorizontal = Integer.parseInt(config[6][1].trim());
 
     // Подключение к базе данных
     void connect() {

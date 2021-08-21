@@ -39,9 +39,7 @@ public class Gui extends JFrame {
     ImageIcon exitIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/exit2.png")));
     ImageIcon munusIcon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/minus.png")));
     ImageIcon munusIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getResource("icons/minus2.png")));
-    //Split panel
-    private int dividerMain = 500;
-    // Left table
+    // Split panel, Left table
     static JTable executeTable;
     static DefaultTableModel executeModel;
     private final TableColumnModel executeColumnModel;
@@ -259,9 +257,9 @@ public class Gui extends JFrame {
         splitPane.setBounds(5, 30, 1380, 820);
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerSize(8);
-        splitPane.setDividerLocation(dividerMain);
+        splitPane.setDividerLocation(pg.dividerVertical);
         getContentPane().add(splitPane);
-        splitPane.addPropertyChangeListener(e -> dividerMain = splitPane.getDividerLocation());
+        //splitPane.addPropertyChangeListener(e -> pg.dividerVertical = splitPane.getDividerLocation());
         JScrollPane leftPanel = new JScrollPane();
         splitPane.setLeftComponent(leftPanel);
         JScrollPane rightPanelBottom = new JScrollPane();
@@ -273,7 +271,7 @@ public class Gui extends JFrame {
 
         splitPane.setRightComponent(splitVertical);
         splitVertical.setBottomComponent(rightPanelBottom);
-        splitVertical.setDividerLocation(690);
+        splitVertical.setDividerLocation(pg.dividerHorizontal);
         splitPane.setRightComponent(splitVertical);
 
         // Refresh button

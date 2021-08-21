@@ -1,5 +1,7 @@
-url;           jdbc:postgresql://0.0.0.0:0000/pgsql;
-user;          ***;
-password;      ***;
-rowsLimit;     300;	  
-transparency;  0.966f;
+url;                jdbc:postgresql://0.0.0.0:0000/pgsql;
+user;               ***;
+password;           ***;
+rowsLimit;          300;	  
+transparency;       0.966f;
+dividerVertical;    500;
+dividerHorizontal;  690;
