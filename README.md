@@ -1,4 +1,4 @@
-# PIDES = Postgresql + IDE + Sql
+# Pides
 This is IDE for Postgresql to make it easier to work with this database. (+ Linux)
 
 1) настройки открываются кнопкой с шестерёнкой в(C:\Users\Public\Documents\Pides\config.txt)
