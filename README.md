@@ -1,5 +1,6 @@
 # mrpro-pgsql-ide
 This is IDE for Postgresql to make it easier to work with this database. (+ Linux)
+Актуальная версия: https://github.com/mrprogre/mrpro-pgsql-ide/raw/master/mrpro-pgsql-ide.jar
 
 1) настройки открываются кнопкой с шестерёнкой в(C:\Users\Public\Documents\mrpro-pgsql-ide\config.txt)
 2) избранные таблицы, отмеченные галочкой, а также комментарии сохраняются в файл C:\Users\Public\Documents\Pides\favorite.txt
