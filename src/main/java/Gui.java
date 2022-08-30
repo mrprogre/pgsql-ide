@@ -81,7 +81,7 @@ public class Gui extends JFrame {
             }
         }
 
-        this.setTitle("Pides");
+        this.setTitle("mrpro-pgsql-ide");
         this.setResizable(false);
         this.setIconImage(logoIcon.getImage());
         this.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -1016,7 +1016,7 @@ public class Gui extends JFrame {
         if (SystemTray.isSupported()) {
             try {
                 BufferedImage iconTray = ImageIO.read(Objects.requireNonNull(Gui.class.getResourceAsStream("/icons/tray.png")));
-                final TrayIcon trayIcon = new TrayIcon(iconTray, "Pides");
+                final TrayIcon trayIcon = new TrayIcon(iconTray, "mrpro-pgsql-ide");
                 systemTray = SystemTray.getSystemTray();
                 systemTray.add(trayIcon);
 
