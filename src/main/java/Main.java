@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
-    static String homeDir = System.getProperty("user.home") + File.separator + "mrpro-pgsql-ide" + File.separator;
+    static String homeDir = System.getProperty("user.home") + File.separator + "pgsql-ide" + File.separator;
     static String configPath = homeDir + "config.txt";
     static String favoritePath = homeDir + "favorite.txt";
 
