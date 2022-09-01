@@ -1,6 +1,9 @@
 # pgsql-ide
 This is IDE for Postgresql to make it easier to work with this database. (+ Linux)
 
+Actual version:
+https://github.com/mrprogre/pgsql-ide/raw/master/pgsql-ide.jar
+
 1) настройки открываются кнопкой с шестерёнкой в(C:\Users\Public\Documents\pgsql-ide\config.txt)
 2) избранные таблицы, отмеченные галочкой, а также комментарии сохраняются в файл C:\Users\Public\Documents\Pides\favorite.txt
 3) приложение сворачивается в трей (нажатие правой кнопки мыши на иконке в трее 
