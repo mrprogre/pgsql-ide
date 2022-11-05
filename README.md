@@ -1,4 +1,4 @@
-# pgsql-ide
+# pgsql-ide (old project)
 This is IDE for Postgresql to make it easier to work with this database. (+ Linux)
 
 Actual version:
